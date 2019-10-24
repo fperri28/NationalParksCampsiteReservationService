@@ -9,14 +9,14 @@ public interface CampgroundDAO {
 // 	C.R.U.D (Create (Insert) - Read (Select) - Update - Delete)
 	
 	//	Create Method - Add a row to the table
-	public boolean addLocation(Campground newCampground);		//	Insert a row into the campground table from a Campgrund Object
+	public boolean addCampground(Campground newCampground);		//	Insert a row into the campground table from a Campgrund Object
 
 	// 	Read Method(s) - Select a row(s) from the table
 	public Campground getCampgroundById(String aCampgroundId);	//	Select a campground by it's ID (Primary Key)
 	
 	public List<Campground> getAllCampgrounds();				//	Return all the campground
 	
-	public List<Campground> getCampgroundByPark(String park);	//	Return all campground in a park
+	public List<Campground> getCampgroundByPark(int parkId);	//	Return all campground in a park
 
 	public BigDecimal getCampgroundRate(Campground aCampground);//	Return the rate for a campground
 	

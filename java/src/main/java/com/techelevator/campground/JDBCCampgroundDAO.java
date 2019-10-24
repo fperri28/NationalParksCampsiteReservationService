@@ -20,7 +20,7 @@ public class JDBCCampgroundDAO implements CampgroundDAO{
 	}
 	
 	@Override
-	public boolean addLocation(Campground newCampground) {
+	public boolean addCampground(Campground newCampground) {
 		// TODO Auto-generated method stub
 		return false;
 	}
@@ -57,9 +57,20 @@ public class JDBCCampgroundDAO implements CampgroundDAO{
 	}
 
 	@Override
-	public List<Campground> getCampgroundByPark(String park) {
-		// TODO Auto-generated method stub
-		return null;
+	public List<Campground> getCampgroundByPark(int parkId) {
+		List<Campground> campByPark = new ArrayList<Campground>();
+		
+		String sqlListAllCampgroundsQuery = "SELECT * "+
+				   							"FROM Campground " +
+				   							"WHERE park_id = ?";
+		SqlRowSet results = jdbcTemplate.queryForRowSet(sqlListAllCampgroundsQuery, parkId);
+
+		while(results.next()) {	
+			Campground aCampground = mapRowToCampground(results);
+			campByPark.add(aCampground);
+		}
+		
+		return campByPark;
 	}
 
 	@Override
@@ -85,6 +96,13 @@ public class JDBCCampgroundDAO implements CampgroundDAO{
 		// TODO Auto-generated method stub
 		
 	}
+	
+	private List<Campground> open(int monthOpen, int monthClose) {
+		List<Campground>openForBusiness = new ArrayList<Campground>();
+		
+		return openForBusiness;
+	}
+	
 
 	private int getNextCampgroundId() {
 		SqlRowSet nextIdResult = jdbcTemplate.queryForRowSet("SELECT nextval('seq_campground_id')");

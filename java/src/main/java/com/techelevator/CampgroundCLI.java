@@ -36,12 +36,12 @@ public class CampgroundCLI {
 	private static final String[] MAIN_MENU_OPTIONS = { MAIN_MENU_OPTION_DISPLAY_ITEMS, MAIN_MENU_OPTION_PURCHASE,
 			MAIN_MENU_OPTION_EXIT };
 
-	private static final String SUB_MENU_FEED_MONEY = "Feed Money";
-	private static final String SUB_MENU_SELECT_PRODUCT = "Select Product";
-	private static final String SUB_MENU_FINISH_TRANSACTION = "Finish Transaction";
+	private static final String VIEW_CAMPGROUNDS = "View Campgrounds";
+	private static final String SEARCH_RESERVATIONS = "Search for Reservations";
+	private static final String RETURN_TO_MAIN_MENU = "Return to Previous Screen";
 
-	private static final String[] SUB_MENU_OPTIONS = { SUB_MENU_FEED_MONEY, SUB_MENU_SELECT_PRODUCT,
-			SUB_MENU_FINISH_TRANSACTION };
+	private static final String[] SUB_MENU_OPTIONS = { VIEW_CAMPGROUNDS, SEARCH_RESERVATIONS,
+			RETURN_TO_MAIN_MENU };
 
 	private static final String SUB_SUB_MENU_ONE_DOLLAR = "Add $1.00";
 	private static final String SUB_SUB_MENU_TWO_DOLLARS = "Add $2.00";
@@ -90,13 +90,12 @@ public class CampgroundCLI {
 	public void run() {
 		String choice = (String) campgroundMenu.getChoiceFromOptions(displayParks()); 
 				
-		
-				String lastChoice = displayParks().get(displayParks().size()-1);
+				Object lastChoice = displayParks()[displayParks().length-1];
 				if(choice == lastChoice){
 					endMethodProcessing();
 				} else {
 					displayParkDetails(choice);
-					
+					campgrounds(choice);
 				}
 	}
 
@@ -106,31 +105,30 @@ public class CampgroundCLI {
 	 * Display the Sub menu and process option chosen
 	 ***************************************************************************************************************************/
 
-//	public void campgrounds() {
-//
-//		boolean shouldProcess = true;
-//		while (shouldProcess) {
-//
-//			String choice = (String) campgroundMenu.getChoiceFromOptions(SUB_MENU_OPTIONS); 
-//																									
-//			switch (choice) {
-//
-//			case SUB_MENU_FEED_MONEY:
-//				money();
-//				break;
-//
-//			case SUB_MENU_SELECT_PRODUCT:
-//				break;
-//
-//			case SUB_MENU_FINISH_TRANSACTION:
-//				finalizeTransaction();
-//				shouldProcess = false;
-//				break;
-//
-//			}
-//		}
-//		return;
-//	}
+	public void campgrounds() {
+
+		boolean shouldProcess = true;
+		while (shouldProcess) {
+
+			String choice = (String) campgroundMenu.getChoiceFromOptions(SUB_MENU_OPTIONS); 
+																									
+			switch (choice) {
+
+			case VIEW_CAMPGROUNDS:
+				
+				break;
+
+			case SEARCH_RESERVATIONS:
+				break;
+
+			case RETURN_TO_MAIN_MENU:
+				shouldProcess = false;
+				break;
+
+			}
+		}
+		return;
+	}
 
 	/**************************************************************************************************************************
 	 * CampgroundCLI Feed money loop
@@ -163,7 +161,7 @@ public class CampgroundCLI {
 	 * Methods used to perform processing
 	 ********************************************************************************************************/
 
-	public List<String> displayParks() {
+	public Object[] displayParks() {
 		List<Park> parks = parkDAO.getAllParks();
 		List<String> parkNames = new ArrayList<String>();
 		
@@ -177,66 +175,24 @@ public class CampgroundCLI {
 			System.out.println("\n*** No results ***");
 		}
 		parkNames.add("Quit");
-		return parkNames;
+		return parkNames.toArray();
+	}
+	
+	public Object[] displayCampgrounds(String parkId) {
+		List<Campground> campgroundsByPark = campDAO.getCampgroundByPark(parkId);
+		
+		
+		
+		
+		
+		return ;
 	}
 
-//	public static boolean purchaseItems() {
-//
-//		//////////////////////// TEXT PROMPTS FOR USER /////////////////////////////
-//		System.out.println("Which product would you like to purchase?");
-//		System.out.println("_________________________________________");
-//		
-//	//	displayParks(); 
-//		
-//		System.out.println("_________________________________________");
-//		System.out.println();
-//		//System.out.println("Current balance: $" + String.format("%.2f", Vending.getCurrentBalance()));
-//		System.out.println("Enter Slot ID: (A1, B3, etc)");
-//		System.out.println("To Return to menu enter \"EXIT\" ");
-//
-//		String productChoice = getProductChoice();
-//
-//		boolean result = true;
-//
-//		if (productChoice.equals("EXIT")) {
-//			result = false;
-//		} else {
-//			try {
-////				try {
-////			//		Vending.products.get(productChoice).purchaseItem();
-////				} catch (IOException e) {
-////					System.out.println("I'm sorry you entered an invalid Slot ID");
-////					System.out.println("Please try again.");
-////				}
-//			} catch (NullPointerException e) {
-//				if (!productChoice.equals("EXIT")) {
-//					System.out.println("I'm sorry you entered an invalid Slot ID");
-//					System.out.println("Please try again.");
-//				}
-//			}
-////			if (Vending.getCurrentBalance() < .75) {
-////				System.out.println();
-////				System.out.println("To continue shopping please Feed Money.");
-////				System.out.println();
-////				result = false;
-////			}
-//		}
-//		return result;
-//	}
+
 
 	public static void endMethodProcessing() {
 		System.out.println("Thanks for visiting the National Park Campsite website. \"In all things of nature there is something of the marvelous.\" Aristotle");
 		System.exit(0);
-	}
-
-	public static void finalizeTransaction() {
-//		Transaction finalizeTransaction = null;
-//		try {
-//			finalizeTransaction = new Transaction("FINISH TRANSACTION", 0.0);
-//			finalizeTransaction.finishTransaction();
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//		}
 	}
 	
 	public void displayParkDetails(String choice) {
@@ -263,13 +219,6 @@ public class CampgroundCLI {
 		}
 	}
 	
-
-//	private static String getProductChoice() {
-//		Scanner theKeyboard = new Scanner(System.in);
-//		String userInput = theKeyboard.nextLine();
-//		String userInputParsed = userInput.trim().toUpperCase();
-//		return userInputParsed;
-//	}
 }
 
 

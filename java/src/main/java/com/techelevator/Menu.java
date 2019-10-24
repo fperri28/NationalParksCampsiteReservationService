@@ -17,27 +17,27 @@ public class Menu {
 		this.in = new Scanner(input);
 	}
 
-	public Object getChoiceFromOptions(List<String> options) {
+	public Object getChoiceFromOptions(Object[] objects) {
 		Object choice = null;
 		while(choice == null) {
-			displayMenuOptions(options);
+			displayMenuOptions(objects);
 			
 			out.print("\nPlease choose an option >>> ");
 			out.flush();
 			
-			choice = getChoiceFromUserInput(options);
+			choice = getChoiceFromUserInput(objects);
 		}
 		return choice;
 	}
 
-	private Object getChoiceFromUserInput(List<String> options) {
+	private Object getChoiceFromUserInput(Object[] objects) {
 		Object choice = null;
 		String userInput = in.nextLine();
 		System.out.println(userInput);
 		try {
 			int selectedOption = Integer.valueOf(userInput);
-			if(selectedOption > 0 && selectedOption <= options.size()) {
-				choice = options.get(selectedOption - 1);
+			if(selectedOption > 0 && selectedOption <= objects.length) {
+				choice = objects[selectedOption - 1];
 			} 
 		} catch(NumberFormatException e) {
 			// eat the exception, an error message will be displayed below since choice will be null
@@ -48,11 +48,11 @@ public class Menu {
 		return choice;
 	}
 
-	private void displayMenuOptions(List<String> options) { // MAIN MENU METHOD EXCLUDES THE HIDDEN OPTION
+	private void displayMenuOptions(Object[] objects) { // MAIN MENU METHOD EXCLUDES THE HIDDEN OPTION
 		out.println();
-		for(int i = 0; i < options.size(); i++) {
+		for(int i = 0; i < objects.length; i++) {
 			int optionNum = i+1;
-					out.println( optionNum + ") " + options.get(i));;
+					out.println( optionNum + ") " + objects[i]);;
 					
 		}
 

@@ -1,9 +1,6 @@
 package com.techelevator.site;
 
-import java.math.BigDecimal;
 import java.util.List;
-
-import com.techelevator.campground.Campground;
 
 public interface SiteDAO {
 
@@ -13,25 +10,22 @@ public interface SiteDAO {
 	public boolean addLocation(Site newSite);		//	Insert a row into the site table from a site Object
 
 	// 	Read Method(s) - Select a row(s) from the table
-	public Site getSiteById(String aSite);	//	Select a campground by it's ID (Primary Key)
+	public Site getSiteById(String aSite);	//	Select a sites by it's ID (Primary Key)
 	
-	public List<Campground> getAllCampgrounds();				//	Return all the campground
+	public List<Site> getAllSites();				//	Return all the Sites
 	
-	public List<Campground> getCampgroundByPark(String park);	//	Return all campground in a park
+	public List<Site> getSiteByCampground(String campground);	//	Return all sites in a site
 
-	public BigDecimal getCampgroundRate(Campground aCampground);//	Return the rate for a campground
 	
-	
-	//TODO Add a read method for getCampgroundByOpenDate?
 	
 	
 	//	Update Method - Update (returns nothing)
-	public void changeCampgroundData(Campground aCampground);	//	Update a campground in the table using values in the location object
+	public void changeSiteData(Site aSite);	//	Update a Site in the table using values in the location object
 
 	//	Delete Method - Delete (returns nothing)
-	public void deleteCampgroundById(String aCampgroundId);		//	Delete a campground by it's ID (Primary Key)
+	public void deleteSiteById(String aSiteId);		//	Delete a Site by it's ID (Primary Key)
 	
-	public void deleteCampgroundByPark(String park);			//	Delete all rows for a campground
+	public void deleteSiteBySite(String campground);			//	Delete all rows for a Site
 	
 	
 	

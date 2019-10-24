@@ -62,26 +62,12 @@ public class JDBCParkDAO implements ParkDAO{
 		return allParks;
 	}
 
-//	This doesn't make sense, campgrounds are IN parks	
-//	@Override
-//	public List<Park> getParkByCampground(String campground) {
-//		// TODO Auto-generated method stub
-//		return null;
-//	}
-
-//	Parks don't have rates, campgrounds do		
-//	@Override
-//	public BigDecimal getParkRate(Park aPark) {
-//		// TODO Auto-generated method stub
-//		return null;
-//	}
-
 	@Override
 	public void changeParkData(Park aPark) {
 
-		String sqlUpdateDeptName = 	"UPDATE Park " + 
+		String sqlUpdateDeptName = 	"UPDATE park " + 
 									"SET name = ? " +
-									"WHERE Park_id = ? ";
+									"WHERE park_id = ? ";
 		long deptId = aPark.getPark_id();
 		String updateName = aPark.getName();
 		jdbcTemplate.update(sqlUpdateDeptName, updateName, deptId);	
@@ -89,16 +75,13 @@ public class JDBCParkDAO implements ParkDAO{
 
 	@Override
 	public void deleteParkById(String aParkId) {
-		// TODO Auto-generated method stub
+		String sqlQuery = 	"DELETE FROM park " +
+							"WHERE park_id = ? ";
+		jdbcTemplate.update(sqlQuery, aParkId);
 		
 	}
-
-//	probably unnecessary, keeping for now until final decision
-//	@Override
-//	public void deleteParkByCampground(String campground) {
-//		// TODO Auto-generated method stub
-//		
-//	}
+	
+//	-------------------------------	HELPER METHODS	---------------------------------
 
 	private int getNextParkId() {
 		SqlRowSet nextIdResult = jdbcTemplate.queryForRowSet("SELECT nextval('seq_park_id')");

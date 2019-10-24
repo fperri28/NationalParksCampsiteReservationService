@@ -33,10 +33,9 @@ public class CampgroundCLI {
 
 	private static final String MAIN_MENU_OPTION_DISPLAY_ITEMS = "Display Parks";
 	private static final String MAIN_MENU_OPTION_PURCHASE = "Purchase";
-	private static final String MAIN_MENU_OPTION_EXIT = "Exit";
-	private static final String MAIN_MENU_SECRET_SALES_MENU = " ";
+	private static final String MAIN_MENU_OPTION_EXIT = "Quit";
 	private static final String[] MAIN_MENU_OPTIONS = { MAIN_MENU_OPTION_DISPLAY_ITEMS, MAIN_MENU_OPTION_PURCHASE,
-			MAIN_MENU_OPTION_EXIT, MAIN_MENU_SECRET_SALES_MENU };
+			MAIN_MENU_OPTION_EXIT };
 
 	private static final String SUB_MENU_FEED_MONEY = "Feed Money";
 	private static final String SUB_MENU_SELECT_PRODUCT = "Select Product";
@@ -91,12 +90,8 @@ public class CampgroundCLI {
 
 			case MAIN_MENU_OPTION_EXIT:
 				endMethodProcessing();
-				System.out.println("See Y'all next time!");
+				System.out.println("Thanks for visiting the National Park Campsite website. \"In all things of nature there is something of the marvelous.\" Aristotle");
 				shouldProcess = false;
-				break;
-
-			case MAIN_MENU_SECRET_SALES_MENU:
-				System.out.println("This is the hidden sales report");
 				break;
 			}
 		}
@@ -125,12 +120,6 @@ public class CampgroundCLI {
 				break;
 
 			case SUB_MENU_SELECT_PRODUCT:
-				stillShopping = true;
-				while (stillShopping) {
-					stillShopping = purchaseItems();
-					
-				}
-				
 				break;
 
 			case SUB_MENU_FINISH_TRANSACTION:

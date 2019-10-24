@@ -16,15 +16,15 @@ public class Menu {
 		this.in = new Scanner(input);
 	}
 
-	public Object getChoiceFromOptions(Object[] options , int spaces, boolean showBalance) {
+	public Object getChoiceFromOptions(Object[] options, int spaces, boolean showBalance ) {
 		Object choice = null;
 		while(choice == null) {
 			displayMenuOptions(options, spaces);
 			
-			if (showBalance) {
-				out.println();
-	//			out.println("Current balance: $" +String.format("%.2f", Vending.getCurrentBalance()));
-			}
+//			if (showBalance) {
+//				out.println();
+//				out.println("Current balance: $" +String.format("%.2f", Vending.getCurrentBalance()));
+//			}
 			out.print("\nPlease choose an option >>> ");
 			out.flush();
 			
@@ -54,12 +54,12 @@ public class Menu {
 		out.println();
 		for(int i = 0; i < options.length; i++) {
 			int optionNum = i+1;
-				if (optionNum<=spaces) {
-					out.println(optionNum+") "+options[i]);
-				}
-				else {
-					out.print(options[i]);
-				}
+//				if ( optionNum <= spaces ) {
+					out.println( optionNum + ") " + options[i] );
+//				}
+//				else {
+//					out.print( options[i] );
+//				}
 		}
 
 	}

@@ -14,7 +14,7 @@ public interface SiteDAO {
 	
 	public List<Site> getAllSites();				//	Return all the Sites
 	
-	public List<Site> getSiteByCampground(String campground);	//	Return all sites in a site
+	public List<Site> getSiteByCampground(int campgroundId);	//	Return all sites in a site
 
 	
 	

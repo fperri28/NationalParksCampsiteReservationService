@@ -16,10 +16,10 @@ public interface ReservationDAO {
 	//Return all reservations
 	public List<Reservation> getAllReservations();
 	//search Reservations by Dates
-	public List<Reservation> getReservationsByDate(LocalDate fromDate, LocalDate toDate);
+	public List<Reservation> getReservationsByDate(int siteId, LocalDate fromDate, LocalDate toDate);
 	
 	//search Reservations by Site
-	public List<Reservation> getReservationsBySite(Long SiteId);
+	public List<Reservation> getReservationsBySite(int siteId, LocalDate fromDate, LocalDate toDate);
 	
 	//	Select a Reservation by it's ID (Primary Key)
 	public Reservation getReservationById(int aReservationId);
@@ -28,11 +28,11 @@ public interface ReservationDAO {
 	public List<Reservation> getResByMaxOcc(int occ);
 	
 	// Modify existing reservations
-	public boolean updateReservation(Long resID, LocalDate fromDate, LocalDate toDate);
+	public boolean updateReservation(int resID, LocalDate fromDate, LocalDate toDate);
 	
 	
 	// Delete reservations
-	public boolean delReservation(Long resID);
+	public boolean delReservation(int resID);
 	
 	
 	

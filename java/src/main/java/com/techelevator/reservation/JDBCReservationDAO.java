@@ -48,9 +48,14 @@ GROUP BY site.campground_id, reservation.reservation_id, site.site_id
 		newRes.setTo_date(toDate);
 		newRes.setCreate_date(LocalDate.now());
 		
-		jdbcTemplate.update(sqlAddNewRes, newRes.getReservation_id(), newRes.getSite_id(),
-										  newRes.getName(), newRes.getFrom_date(), newRes.getTo_date(),
-										  newRes.getCreate_date());
+		jdbcTemplate.update(sqlAddNewRes, 
+							newRes.getReservation_id(), 
+							newRes.getSite_id(),
+							newRes.getName(), 
+							newRes.getFrom_date(), 
+							newRes.getTo_date(),
+							newRes.getCreate_date()
+											);
 
 		return newRes;
 	}
@@ -72,19 +77,38 @@ GROUP BY site.campground_id, reservation.reservation_id, site.site_id
 	}
 
 	@Override
-	public List<Reservation> getReservationsByDate(LocalDate fromDate, LocalDate toDate) {
-		// TODO Auto-generated method stub
-		return null;
+	public List<Reservation> getReservationsByDate(int siteId, LocalDate fromDate, LocalDate toDate) {
+		List<Reservation> reservationbySite = new ArrayList<Reservation>();
+		
+		String sqlListAllEmpQuery = 	"  SELECT * " +
+										" FROM reservation " +
+										" INNER JOIN site ON reservation.site_id = site.site_id " +
+										" WHERE from_date  BETWEEN ? AND ? " +
+										" AND to_date  BETWEEN ? AND ? " +
+										" AND campground_id = ? " +
+										" GROUP BY site.campground_id, reservation.reservation_id, site.site_id ";
+		
+		SqlRowSet results = jdbcTemplate.queryForRowSet(sqlListAllEmpQuery, fromDate, toDate, fromDate, toDate, siteId);
+
+		while(results.next()) {	
+			Reservation aReservation = mapRowToReservation(results);
+			reservationbySite.add(aReservation);
+		}
+		
+		return reservationbySite;
 	}
 
 	@Override
-	public List<Reservation> getReservationsBySite(Long SiteId) {
+	public List<Reservation> getReservationsBySite(int siteId, int campId) {
 		List<Reservation> reservationbySite = new ArrayList<Reservation>();
 		
-		String sqlListAllEmpQuery = 	"SELECT * "+
-				   						"FROM reservation " +
-				   						"WHERE site_id = ?";
-		SqlRowSet results = jdbcTemplate.queryForRowSet(sqlListAllEmpQuery, SiteId);
+		String sqlListAllEmpQuery = 	"SELECT * " + 
+										"FROM reservation " + 
+										"WHERE site_id = ? AND " +
+										"campground_id = ? "
+										;
+		
+		SqlRowSet results = jdbcTemplate.queryForRowSet(sqlListAllEmpQuery, siteId);
 
 		while(results.next()) {	
 			Reservation aReservation = mapRowToReservation(results);
@@ -107,13 +131,13 @@ GROUP BY site.campground_id, reservation.reservation_id, site.site_id
 	}
 
 	@Override
-	public boolean updateReservation(Long resID, LocalDate fromDate, LocalDate toDate) {
+	public boolean updateReservation(int resID, LocalDate fromDate, LocalDate toDate) {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
-	public boolean delReservation(Long resID) {
+	public boolean delReservation(int resID) {
 		// TODO Auto-generated method stub
 		return false;
 	}

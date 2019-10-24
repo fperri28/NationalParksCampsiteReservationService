@@ -33,7 +33,7 @@ public class JDBCSiteDAO implements SiteDAO {
 	}
 
 	@Override
-	public List<Site> getSiteByCampground(String campground) {
+	public List<Site> getSiteByCampground(int campgroundId) {
 		// TODO Auto-generated method stub
 		return null;
 	}

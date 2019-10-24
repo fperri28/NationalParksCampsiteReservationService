@@ -2,6 +2,7 @@ package com.techelevator;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -123,7 +124,7 @@ public class CampgroundCLI {
 		String choice = (String) campgroundMenu.getChoiceFromOptions(RESERVATION_MENU_OPTIONS); 
 
 		if(choice.equals(SEARCH_FOR_AVAILABLE_RESERVATIONS)){
-
+			displayAvailRes();
 		} else if(choice.equals(MENU_EXIT)) {
 			return;
 		}
@@ -177,7 +178,11 @@ public class CampgroundCLI {
 		
 	}
 
-
+	public void displayAvailRes() {
+		List<Reservation> res = resDAO.getReservationsByDate(1, LocalDate.of(2019, 10, 25), LocalDate.of(2019, 10, 30));
+		List<Site> site = siteDAO.getSiteByCampground(res.get(0).getSite_id());
+		System.out.println(site.get(0).getCampground_id());
+	};
 
 	public static void endMethodProcessing() {
 		System.out.println("Thanks for visiting the National Park Campsite website. \"In all things of nature there is something of the marvelous.\" Aristotle");

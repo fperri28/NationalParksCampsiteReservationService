@@ -1,14 +1,33 @@
 package com.techelevator.park;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
+
+import javax.sql.DataSource;
+
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.support.rowset.SqlRowSet;
 
 public class JDBCParkDAO implements ParkDAO{
 
+	private JdbcTemplate jdbcTemplate;
+
+	public JDBCParkDAO(DataSource dataSource) {
+		this.jdbcTemplate = new JdbcTemplate(dataSource);
+	}
+	
 	@Override
-	public boolean addLocation(Park newPark) {
-		// TODO Auto-generated method stub
-		return false;
+	public Park addLocation(Park newPark) {
+		String sqlAddNewPark = 	"INSERT INTO park" + 
+								"(park_id, name, location, establish_date, area, visitors, description) " + 
+								"VALUES (?, ?, ?, ?, ?, ?, ?)";
+		newPark.setPark_id(getNextParkId()); 
+		
+		jdbcTemplate.update(sqlAddNewPark, newPark.getPark_id(), newPark.getName());
+
+		return newPark;
 	}
 
 	@Override
@@ -19,9 +38,20 @@ public class JDBCParkDAO implements ParkDAO{
 
 	@Override
 	public List<Park> getAllParks() {
-		// TODO Auto-generated method stub
-		return null;
+		List<Park> allParks = new ArrayList<Park>();
+		
+		String sqlListAllParksQuery = 	"SELECT * " + 
+										"FROM park " + 
+										"ORDER BY name ASC";
+		SqlRowSet results = jdbcTemplate.queryForRowSet(sqlListAllParksQuery);
+		
+		while(results.next()) {	
+			Park aPark = mapRowToPark(results);
+			allParks.add(aPark);
+		}
+		return allParks;
 	}
+
 
 	@Override
 	public List<Park> getParkByCampground(String campground) {
@@ -53,6 +83,28 @@ public class JDBCParkDAO implements ParkDAO{
 		
 	}
 
+	private int getNextParkId() {
+		SqlRowSet nextIdResult = jdbcTemplate.queryForRowSet("SELECT nextval('seq_park_id')");
+		if (nextIdResult.next()) {
+			return nextIdResult.getInt(1);
+		} else {
+			throw new RuntimeException("Something went wrong while getting an id for the new park");
+		}
+	}
+	
+	private Park mapRowToPark(SqlRowSet results) {
+		Park thePark = new Park(); 
+		
+		thePark.setPark_id(results.getInt("park_id"));
+		thePark.setName(results.getString("name"));
+		thePark.setLocation(results.getString("location"));
+		thePark.setEstablish_date(results.getDate("establish_date").toLocalDate());
+		thePark.setArea(results.getInt("area"));
+		thePark.setVisitors(results.getInt("visitors"));
+		thePark.setDescription(results.getString("description"));
+		
+		return thePark;
+	}
 	
 	
 }

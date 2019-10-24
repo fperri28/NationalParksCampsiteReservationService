@@ -46,13 +46,9 @@ public class CampgroundCLI {
 
 	private static final String SUB_SUB_MENU_ONE_DOLLAR = "Add $1.00";
 	private static final String SUB_SUB_MENU_TWO_DOLLARS = "Add $2.00";
-	private static final String SUB_SUB_MENU_FIVE_DOLLARS = "Add $5.00";
-	private static final String SUB_SUB_MENU_TEN_DOLLARS = "Add $10.00";
 	private static final String	SUB_SUB_MENU_EXIT		= 	"EXIT";
 	private static final String[] SUB_SUB_MENU_OPTIONS = { SUB_SUB_MENU_ONE_DOLLAR, 
 															SUB_SUB_MENU_TWO_DOLLARS,
-															SUB_SUB_MENU_FIVE_DOLLARS, 
-															SUB_SUB_MENU_TEN_DOLLARS, 
 															SUB_SUB_MENU_EXIT};
 
 	private Menu campgroundMenu;
@@ -150,14 +146,6 @@ public class CampgroundCLI {
 			break;
 
 		case SUB_SUB_MENU_TWO_DOLLARS:
-			money();
-			break;
-
-		case SUB_SUB_MENU_FIVE_DOLLARS:
-			money();
-			break;
-
-		case SUB_SUB_MENU_TEN_DOLLARS:
 			money();
 			break;
 

@@ -88,30 +88,17 @@ public class CampgroundCLI {
 	 ***************************************************************************************************************************/
 
 	public void run() {
-		 
-		boolean shouldProcess = true; 
-
-		while (shouldProcess) { 
-
 		String choice = (String) campgroundMenu.getChoiceFromOptions(displayParks()); 
-
-			switch (choice) { 
-
-			case MAIN_MENU_OPTION_DISPLAY_ITEMS:
-				break; 
-
-			case MAIN_MENU_OPTION_PURCHASE:
-				purchase(); 
-				break; 
-
-			case MAIN_MENU_OPTION_EXIT:
-				endMethodProcessing();
-				System.out.println("Thanks for visiting the National Park Campsite website. \"In all things of nature there is something of the marvelous.\" Aristotle");
-				shouldProcess = false;
-				break;
-			}
-		}
-		return;
+				
+		
+				String lastChoice = displayParks().get(displayParks().size()-1);
+				if(choice == lastChoice){
+					endMethodProcessing();
+				} else {
+					
+					
+					campgrounds();
+				}
 	}
 
 	/**************************************************************************************************************************
@@ -120,31 +107,31 @@ public class CampgroundCLI {
 	 * Display the Sub menu and process option chosen
 	 ***************************************************************************************************************************/
 
-	public void purchase() {
-
-		boolean shouldProcess = true;
-		while (shouldProcess) {
-
-			String choice = (String) campgroundMenu.getChoiceFromOptions(SUB_MENU_OPTIONS); 
-																									
-			switch (choice) {
-
-			case SUB_MENU_FEED_MONEY:
-				money();
-				break;
-
-			case SUB_MENU_SELECT_PRODUCT:
-				break;
-
-			case SUB_MENU_FINISH_TRANSACTION:
-				finalizeTransaction();
-				shouldProcess = false;
-				break;
-
-			}
-		}
-		return;
-	}
+//	public void campgrounds() {
+//
+//		boolean shouldProcess = true;
+//		while (shouldProcess) {
+//
+//			String choice = (String) campgroundMenu.getChoiceFromOptions(SUB_MENU_OPTIONS); 
+//																									
+//			switch (choice) {
+//
+//			case SUB_MENU_FEED_MONEY:
+//				money();
+//				break;
+//
+//			case SUB_MENU_SELECT_PRODUCT:
+//				break;
+//
+//			case SUB_MENU_FINISH_TRANSACTION:
+//				finalizeTransaction();
+//				shouldProcess = false;
+//				break;
+//
+//			}
+//		}
+//		return;
+//	}
 
 	/**************************************************************************************************************************
 	 * CampgroundCLI Feed money loop
@@ -152,26 +139,26 @@ public class CampgroundCLI {
 	 * Display the sub menu and process option chosen
 	 ***************************************************************************************************************************/
 
-	public void money() {
-
-
-		String choice = (String) campgroundMenu.getChoiceFromOptions(SUB_SUB_MENU_OPTIONS); 
-
-		switch (choice) {
-
-		case SUB_SUB_MENU_ONE_DOLLAR:
-			money();
-			break;
-
-		case SUB_SUB_MENU_TWO_DOLLARS:
-			money();
-			break;
-
-		case SUB_SUB_MENU_EXIT:
-			break;
-		}
-		return;
-	}
+//	public void money() {
+//
+//
+//		String choice = (String) campgroundMenu.getChoiceFromOptions(SUB_SUB_MENU_OPTIONS); 
+//
+//		switch (choice) {
+//
+//		case SUB_SUB_MENU_ONE_DOLLAR:
+//			money();
+//			break;
+//
+//		case SUB_SUB_MENU_TWO_DOLLARS:
+//			money();
+//			break;
+//
+//		case SUB_SUB_MENU_EXIT:
+//			break;
+//		}
+//		return;
+//	}
 
 	/********************************************************************************************************
 	 * Methods used to perform processing
@@ -190,6 +177,7 @@ public class CampgroundCLI {
 		} else {
 			System.out.println("\n*** No results ***");
 		}
+		parkNames.add("Quit");
 		return parkNames;
 	}
 
@@ -238,7 +226,8 @@ public class CampgroundCLI {
 	}
 
 	public static void endMethodProcessing() {
-
+		System.out.println("Thanks for visiting the National Park Campsite website. \"In all things of nature there is something of the marvelous.\" Aristotle");
+		System.exit(0);
 	}
 
 	public static void finalizeTransaction() {

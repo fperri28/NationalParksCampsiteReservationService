@@ -33,11 +33,12 @@ public class Menu {
 	private Object getChoiceFromUserInput(List<String> options) {
 		Object choice = null;
 		String userInput = in.nextLine();
+		System.out.println(userInput);
 		try {
 			int selectedOption = Integer.valueOf(userInput);
 			if(selectedOption > 0 && selectedOption <= options.size()) {
 				choice = options.get(selectedOption - 1);
-			}
+			} 
 		} catch(NumberFormatException e) {
 			// eat the exception, an error message will be displayed below since choice will be null
 		}
@@ -51,13 +52,7 @@ public class Menu {
 		out.println();
 		for(int i = 0; i < options.size(); i++) {
 			int optionNum = i+1;
-//				if ( optionNum <= spaces ) {
-					out.println( optionNum + ") " + options.get(i));
-//				}
-//				else {
-//					out.print( options[i] );
-//				}
-					// ADD QUITS AND RETURN STATEMENTS IF ARRAY STRING LOCATION MATCHES
+					out.println( optionNum + ") " + options.get(i));;
 					
 		}
 

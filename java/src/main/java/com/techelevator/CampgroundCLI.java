@@ -80,7 +80,7 @@ public class CampgroundCLI {
 
 	public void run() {
 		String choice = (String) campgroundMenu.getChoiceFromOptions(displayParks()); 
-				
+		while(true) {		
 				Object lastChoice = displayParks()[displayParks().length-1];
 				if(choice == lastChoice){
 					endMethodProcessing();
@@ -89,6 +89,7 @@ public class CampgroundCLI {
 					prevPark = choice;
 					campgrounds(choice);
 				}
+		}
 	}
 
 	/**************************************************************************************************************************
@@ -100,10 +101,10 @@ public class CampgroundCLI {
 	public void campgrounds(String park) {
 
 			String choice = (String) campgroundMenu.getChoiceFromOptions(SUB_MENU_OPTIONS); 
-
 			if(choice.equals(VIEW_CAMPGROUNDS)){
 				System.out.println("Park Campgrounds");
 				displayCampgrounds(park);
+				Reservations();
 			} else if(choice.equals(SEARCH_RESERVATIONS)) {
 				Reservations();
 			} else if(choice.equals(RETURN_TO_MAIN_MENU)) {
@@ -124,7 +125,7 @@ public class CampgroundCLI {
 		if(choice.equals(SEARCH_FOR_AVAILABLE_RESERVATIONS)){
 
 		} else if(choice.equals(MENU_EXIT)) {
-			campgrounds(prevPark);
+			return;
 		}
 	}
 

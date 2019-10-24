@@ -11,7 +11,7 @@ public interface ReservationDAO {
 	
 	
 	// Create a new Reservation
-	public Reservation addReservations(Reservation newReservation); 
+	public Reservation addReservations(String name, LocalDate fromDate, LocalDate toDate); 
 	
 	//Return all reservations
 	public List<Reservation> getAllReservations();

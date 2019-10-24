@@ -21,9 +21,24 @@ public class JDBCReservationDAO implements ReservationDAO{
 	
 	
 	@Override
-	public Reservation addReservations(Reservation newReservation) {
-		// TODO Auto-generated method stub
-		return null;
+	public Reservation addReservations(String name, LocalDate fromDate, LocalDate toDate) {
+		Reservation newRes = new Reservation();
+		
+		String sqlAddNewRes = 	"INSERT INTO park " + 
+								"(reservation_id, site_id, name, from_date, to_date, create_date) " + 
+								"VALUES (?, ?, ?, ?, ?, ?)";
+		
+		newRes.setReservation_id(getNextReservationId()); 
+		newRes.setName(name);
+		newRes.setFrom_date(fromDate);
+		newRes.setTo_date(toDate);
+		newRes.setCreate_date(LocalDate.now());
+		
+		jdbcTemplate.update(sqlAddNewRes, newRes.getReservation_id(), newRes.getSite_id(),
+										  newRes.getName(), newRes.getFrom_date(), newRes.getTo_date(),
+										  newRes.getCreate_date());
+
+		return newRes;
 	}
 
 	@Override
@@ -50,8 +65,19 @@ public class JDBCReservationDAO implements ReservationDAO{
 
 	@Override
 	public List<Reservation> getReservationsBySite(Long SiteId) {
-		// TODO Auto-generated method stub
-		return null;
+		List<Reservation> reservationbySite = new ArrayList<Reservation>();
+		
+		String sqlListAllEmpQuery = 	"SELECT * "+
+				   						"FROM reservation " +
+				   						"WHERE site_id = ?";
+		SqlRowSet results = jdbcTemplate.queryForRowSet(sqlListAllEmpQuery, SiteId);
+
+		while(results.next()) {	
+			Reservation aReservation = mapRowToReservation(results);
+			reservationbySite.add(aReservation);
+		}
+		
+		return reservationbySite;
 	}
 	
 	@Override

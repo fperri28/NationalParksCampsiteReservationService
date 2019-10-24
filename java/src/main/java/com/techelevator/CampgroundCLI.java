@@ -2,6 +2,8 @@ package com.techelevator;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 import javax.sql.DataSource;
@@ -86,17 +88,16 @@ public class CampgroundCLI {
 	 ***************************************************************************************************************************/
 
 	public void run() {
-		//Vending.setup();   // NEED SETUP METHOD TO INITIALIZE 
+		 
 		boolean shouldProcess = true; 
 
 		while (shouldProcess) { 
 
-		String choice = (String) campgroundMenu.getChoiceFromOptions(MAIN_MENU_OPTIONS, 3, false); 
+		String choice = (String) campgroundMenu.getChoiceFromOptions(displayParks()); 
 
 			switch (choice) { 
 
 			case MAIN_MENU_OPTION_DISPLAY_ITEMS:
-				displayItems(); 
 				break; 
 
 			case MAIN_MENU_OPTION_PURCHASE:
@@ -122,11 +123,9 @@ public class CampgroundCLI {
 	public void purchase() {
 
 		boolean shouldProcess = true;
-		boolean stillShopping = true;
-
 		while (shouldProcess) {
 
-			String choice = (String) campgroundMenu.getChoiceFromOptions(SUB_MENU_OPTIONS, 3, true); 
+			String choice = (String) campgroundMenu.getChoiceFromOptions(SUB_MENU_OPTIONS); 
 																									
 			switch (choice) {
 
@@ -156,7 +155,7 @@ public class CampgroundCLI {
 	public void money() {
 
 
-		String choice = (String) campgroundMenu.getChoiceFromOptions(SUB_SUB_MENU_OPTIONS, 5, true); 
+		String choice = (String) campgroundMenu.getChoiceFromOptions(SUB_SUB_MENU_OPTIONS); 
 
 		switch (choice) {
 
@@ -178,8 +177,20 @@ public class CampgroundCLI {
 	 * Methods used to perform processing
 	 ********************************************************************************************************/
 
-	public static void displayItems() {
+	public List<String> displayParks() {
+		List<Park> parks = parkDAO.getAllParks();
+		List<String> parkNames = new ArrayList<String>();
 		
+		System.out.println();
+		
+		if(parks.size() > 0) {
+			for(Park cur : parks) {
+				parkNames.add(cur.getName());
+			}
+		} else {
+			System.out.println("\n*** No results ***");
+		}
+		return parkNames;
 	}
 
 	public static boolean purchaseItems() {
@@ -188,7 +199,7 @@ public class CampgroundCLI {
 		System.out.println("Which product would you like to purchase?");
 		System.out.println("_________________________________________");
 		
-		displayItems(); 
+	//	displayParks(); 
 		
 		System.out.println("_________________________________________");
 		System.out.println();

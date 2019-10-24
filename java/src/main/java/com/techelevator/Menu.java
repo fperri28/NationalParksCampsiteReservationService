@@ -3,6 +3,7 @@ package com.techelevator;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.util.List;
 import java.util.Scanner;
 
 
@@ -16,15 +17,11 @@ public class Menu {
 		this.in = new Scanner(input);
 	}
 
-	public Object getChoiceFromOptions(Object[] options, int spaces, boolean showBalance ) {
+	public Object getChoiceFromOptions(List<String> options) {
 		Object choice = null;
 		while(choice == null) {
-			displayMenuOptions(options, spaces);
+			displayMenuOptions(options);
 			
-//			if (showBalance) {
-//				out.println();
-//				out.println("Current balance: $" +String.format("%.2f", Vending.getCurrentBalance()));
-//			}
 			out.print("\nPlease choose an option >>> ");
 			out.flush();
 			
@@ -33,13 +30,13 @@ public class Menu {
 		return choice;
 	}
 
-	private Object getChoiceFromUserInput(Object[] options) {
+	private Object getChoiceFromUserInput(List<String> options) {
 		Object choice = null;
 		String userInput = in.nextLine();
 		try {
 			int selectedOption = Integer.valueOf(userInput);
-			if(selectedOption > 0 && selectedOption <= options.length) {
-				choice = options[selectedOption - 1];
+			if(selectedOption > 0 && selectedOption <= options.size()) {
+				choice = options.get(selectedOption - 1);
 			}
 		} catch(NumberFormatException e) {
 			// eat the exception, an error message will be displayed below since choice will be null
@@ -50,16 +47,18 @@ public class Menu {
 		return choice;
 	}
 
-	private void displayMenuOptions(Object[] options, int spaces) { // MAIN MENU METHOD EXCLUDES THE HIDDEN OPTION
+	private void displayMenuOptions(List<String> options) { // MAIN MENU METHOD EXCLUDES THE HIDDEN OPTION
 		out.println();
-		for(int i = 0; i < options.length; i++) {
+		for(int i = 0; i < options.size(); i++) {
 			int optionNum = i+1;
 //				if ( optionNum <= spaces ) {
-					out.println( optionNum + ") " + options[i] );
+					out.println( optionNum + ") " + options.get(i));
 //				}
 //				else {
 //					out.print( options[i] );
 //				}
+					// ADD QUITS AND RETURN STATEMENTS IF ARRAY STRING LOCATION MATCHES
+					
 		}
 
 	}

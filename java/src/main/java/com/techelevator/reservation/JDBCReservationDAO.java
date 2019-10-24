@@ -18,6 +18,20 @@ public class JDBCReservationDAO implements ReservationDAO{
 		this.jdbcTemplate = new JdbcTemplate(dataSource);
 	}
 	
+/*
+ * 
+ * SELECT *
+FROM reservation
+INNER JOIN site ON reservation.site_id = site.site_id
+WHERE from_date  BETWEEN '2019-01-01' AND '2019-12-30'
+AND campground_id = 2
+GROUP BY site.campground_id, reservation.reservation_id, site.site_id 
+; 
+ * 
+ * 
+ * 
+ */
+	
 	
 	
 	@Override

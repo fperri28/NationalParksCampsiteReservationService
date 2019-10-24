@@ -18,22 +18,32 @@ public class JDBCParkDAO implements ParkDAO{
 		this.jdbcTemplate = new JdbcTemplate(dataSource);
 	}
 	
+//	Do we even need this? - Check with Frank before finishing
 	@Override
 	public Park addLocation(Park newPark) {
-		String sqlAddNewPark = 	"INSERT INTO park" + 
-								"(park_id, name, location, establish_date, area, visitors, description) " + 
-								"VALUES (?, ?, ?, ?, ?, ?, ?)";
-		newPark.setPark_id(getNextParkId()); 
-		
-		jdbcTemplate.update(sqlAddNewPark, newPark.getPark_id(), newPark.getName());
+//		String sqlAddNewPark = 	"INSERT INTO park" + 
+//								"(park_id, name, location, establish_date, area, visitors, description) " + 
+//								"VALUES (?, ?, ?, ?, ?, ?, ?)";
+//		newPark.setPark_id(getNextParkId()); 
+//		
+//		jdbcTemplate.update(sqlAddNewPark, newPark.getPark_id(), newPark.getName());
 
 		return newPark;
 	}
 
 	@Override
-	public Park getParkById(String aPark) {
-		// TODO Auto-generated method stub
-		return null;
+	public Park getParkById(int aParkId) {
+
+		Park thePark = null;
+		String sqlSearchParksById = 	"SELECT * " + 
+										"FROM park " + 
+										"WHERE park_id = ?";
+		
+		SqlRowSet results = jdbcTemplate.queryForRowSet(sqlSearchParksById, aParkId);		
+		while(results.next()) {	
+			thePark = mapRowToPark(results);
+		}
+		return thePark;
 	}
 
 	@Override
@@ -52,23 +62,29 @@ public class JDBCParkDAO implements ParkDAO{
 		return allParks;
 	}
 
+//	This doesn't make sense, campgrounds are IN parks	
+//	@Override
+//	public List<Park> getParkByCampground(String campground) {
+//		// TODO Auto-generated method stub
+//		return null;
+//	}
 
-	@Override
-	public List<Park> getParkByCampground(String campground) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public BigDecimal getParkRate(Park aPark) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+//	Parks don't have rates, campgrounds do		
+//	@Override
+//	public BigDecimal getParkRate(Park aPark) {
+//		// TODO Auto-generated method stub
+//		return null;
+//	}
 
 	@Override
 	public void changeParkData(Park aPark) {
-		// TODO Auto-generated method stub
-		
+
+		String sqlUpdateDeptName = 	"UPDATE Park " + 
+									"SET name = ? " +
+									"WHERE Park_id = ? ";
+		long deptId = aPark.getPark_id();
+		String updateName = aPark.getName();
+		jdbcTemplate.update(sqlUpdateDeptName, updateName, deptId);	
 	}
 
 	@Override
@@ -77,11 +93,12 @@ public class JDBCParkDAO implements ParkDAO{
 		
 	}
 
-	@Override
-	public void deleteParkByCampground(String campground) {
-		// TODO Auto-generated method stub
-		
-	}
+//	probably unnecessary, keeping for now until final decision
+//	@Override
+//	public void deleteParkByCampground(String campground) {
+//		// TODO Auto-generated method stub
+//		
+//	}
 
 	private int getNextParkId() {
 		SqlRowSet nextIdResult = jdbcTemplate.queryForRowSet("SELECT nextval('seq_park_id')");

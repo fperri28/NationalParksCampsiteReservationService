@@ -12,7 +12,7 @@ public interface CampgroundDAO {
 	public boolean addLocation(Campground newCampground);		//	Insert a row into the campground table from a Campgrund Object
 
 	// 	Read Method(s) - Select a row(s) from the table
-	public Campground getCampgroundById(String aCampground);	//	Select a campground by it's ID (Primary Key)
+	public Campground getCampgroundById(String aCampgroundId);	//	Select a campground by it's ID (Primary Key)
 	
 	public List<Campground> getAllCampgrounds();				//	Return all the campground
 	

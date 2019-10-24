@@ -2,7 +2,17 @@ package com.techelevator.site;
 
 import java.util.List;
 
+import javax.sql.DataSource;
+
+import org.springframework.jdbc.core.JdbcTemplate;
+
 public class JDBCSiteDAO implements SiteDAO {
+	
+	private JdbcTemplate jdbcTemplate;
+	
+	public JDBCSiteDAO(DataSource dataSource) {
+		this.jdbcTemplate = new JdbcTemplate(dataSource);
+	}
 
 	@Override
 	public boolean addLocation(Site newSite) {

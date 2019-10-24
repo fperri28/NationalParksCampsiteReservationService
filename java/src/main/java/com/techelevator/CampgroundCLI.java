@@ -9,23 +9,20 @@ import javax.sql.DataSource;
 import org.apache.commons.dbcp2.BasicDataSource;
 
 import com.techelevator.Menu;
+import com.techelevator.campground.Campground;
+import com.techelevator.campground.CampgroundDAO;
+import com.techelevator.campground.JDBCCampgroundDAO;
+import com.techelevator.park.JDBCParkDAO;
+import com.techelevator.park.Park;
+import com.techelevator.park.ParkDAO;
+import com.techelevator.reservation.JDBCReservationDAO;
+import com.techelevator.reservation.Reservation;
+import com.techelevator.reservation.ReservationDAO;
+import com.techelevator.site.JDBCSiteDAO;
+import com.techelevator.site.Site;
+import com.techelevator.site.SiteDAO;
 
 public class CampgroundCLI {
-
-	public static void main(String[] args) {
-		BasicDataSource dataSource = new BasicDataSource();
-		dataSource.setUrl("jdbc:postgresql://localhost:5432/campground");
-		dataSource.setUsername("postgres");
-		dataSource.setPassword("postgres1");
-
-		
-		Menu appMenu = new Menu(System.in, System.out);                		// Instantiate a menu for Vending Machine to use
-		CampgroundCLI application = new CampgroundCLI(dataSource, appMenu);	// Instantiate a CampgroundCLI passing it the datasource and Menu object to use
-		application.run();													// Tell the CampgrounCLI to start running
-	}
-
-	
-	
 	
 ///////////////////////////////////////////MENU CLI ////////////////////////////////////////////////////////////////
 
@@ -51,12 +48,34 @@ public class CampgroundCLI {
 															SUB_SUB_MENU_TWO_DOLLARS,
 															SUB_SUB_MENU_EXIT};
 
+	
+	
+///////////////////////////////////////	Variable//////////////////////////////////////////////////
 	private Menu campgroundMenu;
-	public CampgroundCLI(DataSource datasource, Menu menu) {
-		this.campgroundMenu = menu;
+	private ParkDAO parkDAO;
+	private CampgroundDAO campDAO;
+	private ReservationDAO resDAO;
+	private SiteDAO siteDAO;
+	
+	public static void main(String[] args) {
+		CampgroundCLI application = new CampgroundCLI();
+		application.run();
 		
+	}
+	
+	public CampgroundCLI() {
+		this.campgroundMenu = new Menu(System.in, System.out);               		// Instantiate a menu for Campground to use
+
+		BasicDataSource dataSource = new BasicDataSource();
+		dataSource.setUrl("jdbc:postgresql://localhost:5432/campground");
+		dataSource.setUsername("postgres");
+		dataSource.setPassword("postgres1");
 		
-		// create your DAOs here
+		parkDAO = new JDBCParkDAO(dataSource);
+		campDAO = new JDBCCampgroundDAO(dataSource);
+		resDAO = new JDBCReservationDAO(dataSource);
+		siteDAO = new JDBCSiteDAO(dataSource);
+		
 	}
 
 
@@ -160,7 +179,7 @@ public class CampgroundCLI {
 	 ********************************************************************************************************/
 
 	public static void displayItems() {
-		//Vending.getItems();
+		
 	}
 
 	public static boolean purchaseItems() {

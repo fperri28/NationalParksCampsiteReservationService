@@ -3,8 +3,20 @@ package com.techelevator.reservation;
 import java.time.LocalDate;
 import java.util.List;
 
+import javax.sql.DataSource;
+
+import org.springframework.jdbc.core.JdbcTemplate;
+
 public class JDBCReservationDAO implements ReservationDAO{
 
+	private JdbcTemplate jdbcTemplate;
+	
+	public JDBCReservationDAO(DataSource dataSource) {
+		this.jdbcTemplate = new JdbcTemplate(dataSource);
+	}
+	
+	
+	
 	@Override
 	public boolean addReservations(Reservation newReservation) {
 		// TODO Auto-generated method stub

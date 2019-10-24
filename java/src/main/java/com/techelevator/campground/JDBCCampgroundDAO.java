@@ -3,8 +3,19 @@ package com.techelevator.campground;
 import java.math.BigDecimal;
 import java.util.List;
 
+import javax.sql.DataSource;
+
+import org.springframework.jdbc.core.JdbcTemplate;
+
 public class JDBCCampgroundDAO implements CampgroundDAO{
 
+	private JdbcTemplate jdbcTemplate;
+	
+	public JDBCCampgroundDAO(DataSource dataSource) {
+		this.jdbcTemplate = new JdbcTemplate(dataSource);
+		
+	}
+	
 	@Override
 	public boolean addLocation(Campground newCampground) {
 		// TODO Auto-generated method stub

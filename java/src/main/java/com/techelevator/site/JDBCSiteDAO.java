@@ -55,13 +55,13 @@ public class JDBCSiteDAO implements SiteDAO {
 	}
 
 	@Override
-	public List<Site> getSiteByCampground(String campground) {
+	public List<Site> getSiteByCampground(int campgroundId) {
 		List<Site> siteByCampground = new ArrayList<Site>();
 		
 		String sqlListAllSitesQuery = "SELECT * "+
 				   					  "FROM site " +
 				   					  "WHERE campground_id = ?";
-		SqlRowSet results = jdbcTemplate.queryForRowSet(sqlListAllSitesQuery, campground);
+		SqlRowSet results = jdbcTemplate.queryForRowSet(sqlListAllSitesQuery, campgroundId);
 
 		while(results.next()) {	
 			Site aSite = mapRowToSite(results);
@@ -70,6 +70,26 @@ public class JDBCSiteDAO implements SiteDAO {
 		
 		return siteByCampground;
 	}
+	
+	@Override
+	public List<Site> getCampgroundBySite(int siteId) {
+		List<Site> campgroundBySite = new ArrayList<Site>();
+		
+		String sqlListAllSitesQuery = "SELECT campground_id "+
+				   					  "FROM site " +
+				   					  "WHERE site_id = ?";
+		
+		SqlRowSet results = jdbcTemplate.queryForRowSet(sqlListAllSitesQuery, siteId);
+
+		while(results.next()) {	
+			Site aSite = mapRowToSite(results);
+			campgroundBySite.add(aSite);
+		}
+		
+		return campgroundBySite;
+	}
+	
+	
 
 	@Override
 	public void changeSiteData(Site aSite) {

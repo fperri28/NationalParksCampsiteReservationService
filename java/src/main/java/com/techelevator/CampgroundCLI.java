@@ -180,7 +180,8 @@ public class CampgroundCLI {
 
 	public void displayAvailRes() {
 		List<Reservation> res = resDAO.getReservationsByDate(1, LocalDate.of(2019, 10, 25), LocalDate.of(2019, 10, 30));
-		List<Site> site = siteDAO.getSiteByCampground(res.get(0).getSite_id());
+		int siteID = res.get(0).getSite_id();
+		List<Site> site = siteDAO.getCampgroundBySite(siteID);
 		System.out.println(site.get(0).getCampground_id());
 	};
 

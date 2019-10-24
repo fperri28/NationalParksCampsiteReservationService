@@ -1,6 +1,9 @@
 package com.techelevator.site;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import org.springframework.jdbc.support.rowset.SqlRowSet;
 
 public interface SiteDAO {
 
@@ -14,14 +17,11 @@ public interface SiteDAO {
 	
 	public List<Site> getAllSites();							//	Return all the Sites
 	
-<<<<<<< HEAD
 	public List<Site> getSiteByCampground(int campgroundId);	//	Return all sites in a site
 
+	public List<Site> getCampgroundBySite(int siteId);
+		
 	
-	
-=======
-	public List<Site> getSiteByCampground(String campground);	//	Return all sites in a site
->>>>>>> 3fc04d40d126523a9d8ec216c7b69d77dbdc18f9
 	
 	//	Update Method - Update (returns nothing)
 	public void changeSiteData(Site aSite);						//	Update a Site in the table using values in the location object

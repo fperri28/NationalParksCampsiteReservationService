@@ -19,7 +19,7 @@ public interface ReservationDAO {
 	public List<Reservation> getReservationsByDate(int siteId, LocalDate fromDate, LocalDate toDate);
 	
 	//search Reservations by Site
-	public List<Reservation> getReservationsBySite(int siteId, LocalDate fromDate, LocalDate toDate);
+	public List<Reservation> getReservationsBySite(int siteId, int campId);
 	
 	//	Select a Reservation by it's ID (Primary Key)
 	public Reservation getReservationById(int aReservationId);

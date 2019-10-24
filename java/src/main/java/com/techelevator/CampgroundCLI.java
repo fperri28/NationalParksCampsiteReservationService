@@ -95,9 +95,8 @@ public class CampgroundCLI {
 				if(choice == lastChoice){
 					endMethodProcessing();
 				} else {
+					displayParkDetails(choice);
 					
-					
-					campgrounds();
 				}
 	}
 
@@ -181,49 +180,49 @@ public class CampgroundCLI {
 		return parkNames;
 	}
 
-	public static boolean purchaseItems() {
-
-		//////////////////////// TEXT PROMPTS FOR USER /////////////////////////////
-		System.out.println("Which product would you like to purchase?");
-		System.out.println("_________________________________________");
-		
-	//	displayParks(); 
-		
-		System.out.println("_________________________________________");
-		System.out.println();
-		//System.out.println("Current balance: $" + String.format("%.2f", Vending.getCurrentBalance()));
-		System.out.println("Enter Slot ID: (A1, B3, etc)");
-		System.out.println("To Return to menu enter \"EXIT\" ");
-
-		String productChoice = getProductChoice();
-
-		boolean result = true;
-
-		if (productChoice.equals("EXIT")) {
-			result = false;
-		} else {
-			try {
-//				try {
-//			//		Vending.products.get(productChoice).purchaseItem();
-//				} catch (IOException e) {
+//	public static boolean purchaseItems() {
+//
+//		//////////////////////// TEXT PROMPTS FOR USER /////////////////////////////
+//		System.out.println("Which product would you like to purchase?");
+//		System.out.println("_________________________________________");
+//		
+//	//	displayParks(); 
+//		
+//		System.out.println("_________________________________________");
+//		System.out.println();
+//		//System.out.println("Current balance: $" + String.format("%.2f", Vending.getCurrentBalance()));
+//		System.out.println("Enter Slot ID: (A1, B3, etc)");
+//		System.out.println("To Return to menu enter \"EXIT\" ");
+//
+//		String productChoice = getProductChoice();
+//
+//		boolean result = true;
+//
+//		if (productChoice.equals("EXIT")) {
+//			result = false;
+//		} else {
+//			try {
+////				try {
+////			//		Vending.products.get(productChoice).purchaseItem();
+////				} catch (IOException e) {
+////					System.out.println("I'm sorry you entered an invalid Slot ID");
+////					System.out.println("Please try again.");
+////				}
+//			} catch (NullPointerException e) {
+//				if (!productChoice.equals("EXIT")) {
 //					System.out.println("I'm sorry you entered an invalid Slot ID");
 //					System.out.println("Please try again.");
 //				}
-			} catch (NullPointerException e) {
-				if (!productChoice.equals("EXIT")) {
-					System.out.println("I'm sorry you entered an invalid Slot ID");
-					System.out.println("Please try again.");
-				}
-			}
-//			if (Vending.getCurrentBalance() < .75) {
-//				System.out.println();
-//				System.out.println("To continue shopping please Feed Money.");
-//				System.out.println();
-//				result = false;
 //			}
-		}
-		return result;
-	}
+////			if (Vending.getCurrentBalance() < .75) {
+////				System.out.println();
+////				System.out.println("To continue shopping please Feed Money.");
+////				System.out.println();
+////				result = false;
+////			}
+//		}
+//		return result;
+//	}
 
 	public static void endMethodProcessing() {
 		System.out.println("Thanks for visiting the National Park Campsite website. \"In all things of nature there is something of the marvelous.\" Aristotle");
@@ -238,14 +237,61 @@ public class CampgroundCLI {
 //		} catch (IOException e) {
 //			e.printStackTrace();
 //		}
+	}
 	
+	public void displayParkDetails(String choice) {
+		List<Park> parksDetails = parkDAO.getParkByName(choice);
+		System.out.println();
 		
+		if(parksDetails.size() > 0) {
+			for(Park cur : parksDetails) {
+				System.out.println(cur.getName() + " National Park");
+				System.out.printf(String.format( "%-17s", "Location: "));
+				System.out.println(cur.getLocation());
+				System.out.printf(String.format("%-17s", "Established: "));
+				System.out.println(cur.getEstablish_date());
+				System.out.printf(String.format("%-17s", "Area: "));
+				System.out.println(cur.getArea() + " sq km");
+				System.out.printf(String.format("%-17s", "Annual Visitors: " ));
+				System.out.println(cur.getVisitors());
+				System.out.println();
+				System.out.println(cur.getDescription());
+				
+			}
+		} else {
+			System.out.println("\n*** No results ***");
+		}
 	}
+	
 
-	private static String getProductChoice() {
-		Scanner theKeyboard = new Scanner(System.in);
-		String userInput = theKeyboard.nextLine();
-		String userInputParsed = userInput.trim().toUpperCase();
-		return userInputParsed;
-	}
+//	private static String getProductChoice() {
+//		Scanner theKeyboard = new Scanner(System.in);
+//		String userInput = theKeyboard.nextLine();
+//		String userInputParsed = userInput.trim().toUpperCase();
+//		return userInputParsed;
+//	}
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

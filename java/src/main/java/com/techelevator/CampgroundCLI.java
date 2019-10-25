@@ -33,7 +33,7 @@ import com.techelevator.site.SiteDAO;
 
 public class CampgroundCLI {
 	
-///////////////////////////////////////////MENU CLI ////////////////////////////////////////////////////////////////
+/////////////////////////////////////////// MENU CLI ////////////////////////////////////////////////////////////////
 
 
 
@@ -50,7 +50,8 @@ public class CampgroundCLI {
 
 	
 	
-///////////////////////////////////////	Variable//////////////////////////////////////////////////
+///////////////////////////////////////	Variable //////////////////////////////////////////////////
+	
 	private Menu campgroundMenu;
 	private ParkDAO parkDAO;
 	private CampgroundDAO campDAO;
@@ -240,12 +241,7 @@ public class CampgroundCLI {
 			}
 		}
 		while(!success);		
-				
-				
-				
 		List<Site> availRes = siteDAO.getAvailableResBySite(userSelCampId, parkId, arrDate, depDate);
-		
-		
 				
 		if(availRes.size() > 0) { 
 			displayAvailRes(availRes);
@@ -306,7 +302,7 @@ public class CampgroundCLI {
 		System.out.printf(String.format("%-15s", "Accessible?"));
 		System.out.printf(String.format("%-10s", "RV Len."));
 		System.out.printf(String.format("%-10s", "Utility"));
-		System.out.printf(String.format("%-10s", "Fees"));
+		System.out.printf(String.format("%-10s", "Cost"));
 		System.out.println("\n============================================================");
 		
 
@@ -317,18 +313,16 @@ public class CampgroundCLI {
 			System.out.printf((String.format("%-15s", cur.isAccessible()))); 
 			System.out.printf((String.format("%-10s", cur.getMax_rv_length()))); 
 			System.out.printf((String.format("%-10s", cur.isUtilities())));
-			System.out.printf((String.format("%-20s", "$" + campDAO.getCampgroundRate(cur.getCampground_id()).setScale(2)))); // <--- Cost 
+			System.out.printf((String.format("%-20s", "$" + campDAO.getCampgroundRate(cur.getCampground_id()).setScale(2)))); // <--- Cost time duration 
 			System.out.println();
 		}
 	}
 
 	public void displayParkDetails(String choice) {
 		List<Park> parksDetails = parkDAO.getParkByName(choice);
-		System.out.println();
 		
 		if(parksDetails.size() > 0) {
 			for(Park cur : parksDetails) {
-				System.out.println();
 				System.out.println(cur.getName() + " National Park");
 				System.out.println("\n================================\n");
 				System.out.printf(String.format( "%-17s", "Location: "));

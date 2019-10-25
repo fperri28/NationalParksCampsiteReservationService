@@ -12,7 +12,10 @@ public interface ParkDAO {
 	// 	Read Method(s) - Select a row(s) from the table
 	public Park getParkById(int aParkId);						//	Select a Park by it's ID (Primary Key)
 	
-	public List<Park> getParkByName(String aParkName);				//	Select a Park by it's Name
+	public Park getParkByName(String aParkName);					
+	
+	
+	public List<Park> getParksByName(String aParkName);				//	Select a Park by it's Name
 	
 	public List<Park> getAllParks();							//	Return all the Park
 	

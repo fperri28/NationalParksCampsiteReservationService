@@ -58,7 +58,7 @@ public class CampgroundCLI {
 	private CampgroundDAO campDAO;
 	private ReservationDAO resDAO;
 	private SiteDAO siteDAO;
-	private String prevPark;
+	private int prevPark;
 	public static void main(String[] args) {
 		CampgroundCLI application = new CampgroundCLI();
 		application.run();
@@ -96,7 +96,7 @@ public class CampgroundCLI {
 					endMethodProcessing();
 				} else {
 					displayParkDetails(choice);
-					prevPark = choice;
+					prevPark = parkDAO.getParkByName(choice).getPark_id();
 					campgrounds(choice);
 				}
 		}
@@ -191,27 +191,23 @@ public class CampgroundCLI {
 	
 	
 	public List<Campground> displayCampgroundsByPark(String parkName) {
-		List<Park> parksDetails = parkDAO.getParkByName(parkName);
-		int parkId = parksDetails.get(0).getPark_id();
-		List<Campground> campgroundsByPark = campDAO.getCampgroundByPark(parkId); 
+		//List<Park> parksDetails = parkDAO.getParksByName(parkName);
+		List<Campground> campgroundsByPark = campDAO.getCampgroundByPark(prevPark); 
 	   return campgroundsByPark;
 	}
 	
-	@SuppressWarnings("static-access")
 	private void campSiteSearch() {
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/d/yyyy");
 		Integer userSelCampId = Integer.parseInt(getUserInput("\n\nWhich campground(enter 0 to cancel)?"));
-	
-		List<Campground> campgrounds = displayCampgroundsByPark(prevPark);
+		String parkName = parkDAO.getParkById(prevPark).getName();
+		List<Campground> campgrounds = displayCampgroundsByPark(parkName);
 		Set<Integer> idList = new HashSet<Integer> ();
-		int parkId = parkDAO.getParkByName(prevPark).get(0).getPark_id();
+		//int parkId = parkDAO.getParkByName(prevPark).get(0).getPark_id();
 		
 		for(Campground cur: campgrounds) {
 			idList.add(cur.getCampground_id());
 		}
 		
-		////// WISHLIST OPEN SEASON CONDITIONAL STATEMENT
-				
 		if(userSelCampId == 0) {
 			return;
 		} else if(!idList.contains(userSelCampId)) {
@@ -264,7 +260,7 @@ public class CampgroundCLI {
 	    Period intervalPeriod = Period.between(arrDate, depDate);
 	    BigDecimal stayDays = new BigDecimal(intervalPeriod.getDays());
 				
-		List<Site> availRes = siteDAO.getAvailableResBySite(userSelCampId, parkId, arrDate, depDate);
+		List<Site> availRes = siteDAO.getAvailableResBySite(userSelCampId, prevPark, arrDate, depDate);
 				
 		if(availRes.size() > 0) { 
 			displayAvailRes(availRes, stayDays);
@@ -286,6 +282,9 @@ public class CampgroundCLI {
 	
 	private void selectReservation(LocalDate fromDate, LocalDate toDate) {
 		Integer userSelSite = Integer.parseInt(getUserInput("\n\nWhich site should be reserved (enter 0 to cancel)?"));
+		if(userSelSite == 0) {
+			return;
+		}
 		String userName = getUserInput("\nWhat name should the reservation be made under?");
 		Reservation newRes = resDAO.addReservations(userName, fromDate, toDate, userSelSite);
 		System.out.println("Congratulations " + newRes.getName() + ", you are booked.");
@@ -356,7 +355,7 @@ public class CampgroundCLI {
 	}
 
 	public void displayParkDetails(String choice) {
-		List<Park> parksDetails = parkDAO.getParkByName(choice);
+		List<Park> parksDetails = parkDAO.getParksByName(choice);
 		
 		if(parksDetails.size() > 0) {
 			for(Park cur : parksDetails) {

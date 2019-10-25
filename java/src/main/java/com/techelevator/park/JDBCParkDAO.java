@@ -30,9 +30,26 @@ public class JDBCParkDAO implements ParkDAO{
 
 		return newPark;
 	}
+	
+	@Override
+	public Park getParkByName(String aParkName) {
+		Park aPark = null;
+		
+		String aParkNameSearch = "%" + aParkName + "%";
+		String sqlSearchParksByName = 	"SELECT * " + 
+										"FROM park " + 
+										"WHERE name " + 
+										"ILIKE ?";
+		SqlRowSet results = jdbcTemplate.queryForRowSet(sqlSearchParksByName, aParkNameSearch);
+		
+		while(results.next()) {	
+			aPark = mapRowToPark(results);
+		}
+		return aPark;
+	}
 
 	@Override
-	public List<Park> getParkByName(String aParkName) {
+	public List<Park> getParksByName(String aParkName) {
 		List<Park> theParksSearch = new ArrayList<Park>();
 		
 		String aParkNameSearch = "%" + aParkName + "%";

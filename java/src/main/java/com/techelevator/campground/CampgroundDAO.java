@@ -18,7 +18,7 @@ public interface CampgroundDAO {
 	
 	public List<Campground> getCampgroundByPark(int parkId);	//	Return all campground in a park
 
-	public BigDecimal getCampgroundRate(Campground aCampground);//	Return the rate for a campground
+	public BigDecimal getCampgroundRate(int campgroundId);//	Return the rate for a campground
 	
 	public String stringMonth(String month);
 	//TODO Add a read method for getCampgroundByOpenDate?

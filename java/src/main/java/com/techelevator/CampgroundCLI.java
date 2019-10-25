@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -107,10 +108,13 @@ public class CampgroundCLI {
 			String choice = (String) campgroundMenu.getChoiceFromOptions(SUB_MENU_OPTIONS); 
 			if(choice.equals(VIEW_CAMPGROUNDS)){
 				System.out.println("\n" + park + " National Park Campgrounds\n");
-				displayCampgrounds(park);
+				displayCampgrounds(displayCampgroundsByPark(park));
+				
+				
+				
 				Reservations();
 			} else if(choice.equals(SEARCH_RESERVATIONS)) {
-				Reservations();
+				//Reservations(); This needs to be modified to show all remove the campsite selection portion
 			} else if(choice.equals(RETURN_TO_MAIN_MENU)) {
 				run();
 			}
@@ -127,11 +131,13 @@ public class CampgroundCLI {
 		String choice = (String) campgroundMenu.getChoiceFromOptions(RESERVATION_MENU_OPTIONS); 
 
 		if(choice.equals(SEARCH_FOR_AVAILABLE_RESERVATIONS)){
-			displayAvailRes();
+			campSiteSearch();
 		} else if(choice.equals(MENU_EXIT)) {
 			return;
 		}
 	}
+	
+	
 
 	/********************************************************************************************************
 	 * Methods used to perform processing
@@ -154,12 +160,21 @@ public class CampgroundCLI {
 		return parkNames.toArray();
 	}
 	
-	public void displayCampgrounds(String parkName) {
+	
+	
+	public List<Campground> displayCampgroundsByPark(String parkName) {
 		List<Park> parksDetails = parkDAO.getParkByName(parkName);
 		int parkId = parksDetails.get(0).getPark_id();
+		List<Campground> campgroundsByPark = campDAO.getCampgroundByPark(parkId); //<--- this is what i want for the viable search options
+		// <--- NOT SURE ABOUT THIS
+	   return campgroundsByPark;
+
+
+
+	}
+	
+	public void displayCampgrounds(List<Campground> campgroundsByPark)	{
 		
-		List<Campground> campgroundsByPark = campDAO.getCampgroundByPark(parkId);
-//		System.out.printf(String.format("%-4s", ""));
 		System.out.printf(String.format("%-35s", "Campground Name")); 
 		System.out.printf(String.format("%-13s", "Open"));
 		System.out.printf(String.format("%-13s", "Close"));
@@ -191,15 +206,51 @@ public class CampgroundCLI {
 		
 	}
 
-	public void displayAvailRes() {
-		List<Reservation> res = resDAO.getReservationsByDate(1, LocalDate.of(2019, 10, 25), LocalDate.of(2019, 10, 30));
-		int siteID = res.get(0).getSite_id();
+	
+	private void campSiteSearch() {
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/d/yyyy");
+		int campgroundId = Integer.parseInt(getUserInput("Which campground(enter 0 to cancel)?"));
+		// NEED TO LIMIT SELECTIONS TO THE CAMPGROUND OPTIONS AND 0 TO EXIT
+		List<Campground> campgrounds = displayCampgroundsByPark(prevPark);
+		
+		if(campgroundId == 0) {
+			return;
+		} else if(campgroundId > campgrounds.size()) {
+			System.out.println("INVALID SELECTION");
+			return;
+		} 
+		
+		String inputArrDate = getUserInput("What is the arrival date?__/__/____");
+		// NEED TO THROW ERROR MESSAGE IF INPUT IS NOT VALID
+		
+		LocalDate arrDate = LocalDate.parse(inputArrDate, formatter);
+		String inputDepartureDate = getUserInput("What is the departure date?__/__/____");
+		// NEED TO THROW ERROR MESSAGE IF INPUT IS NOT VALID
+		LocalDate depDate = LocalDate.parse(inputDepartureDate, formatter);
+		
+		List<Reservation> reservedSites = resDAO.getReservationsByDate(campgroundId, arrDate, depDate);
+		displayAvailRes(reservedSites);
+	}
+	
+	@SuppressWarnings("resource")
+	private String getUserInput(String prompt) {
+		System.out.print(prompt + " >>> ");
+		return new Scanner(System.in).nextLine();
+	}
+	
+	
+	
+	public void displayAvailRes(List<Reservation> resSearch) {  
+		
 		
 		List<Park> park = parkDAO.getParkByName(prevPark);
 		int parkID = park.get(0).getPark_id();
+		
 		List<Campground> camp = campDAO.getCampgroundByPark(parkID);
-		List<Site> sites;
+		List<Site> sites = null;
 		List<Integer> sitesByPark = new ArrayList<Integer> ();
+		BigDecimal dailyFee = camp.get(0).getDaily_fee();
+		
 		for(Campground cur: camp) {
 			sites = siteDAO.getSiteByCampground(cur.getCampground_id());
 			for(Site curr: sites) {
@@ -207,10 +258,16 @@ public class CampgroundCLI {
 			}
 		}
 		
-		for(int i = 0; i < sitesByPark.size(); i++) {
-			for(int j = 0; j < res.size(); j++) {
-				if(sitesByPark.get(i) != res.get(j).getSite_id()) {
-					System.out.println(sitesByPark.get(i));
+		System.out.printf(String.format("%-8s", "Sites"));
+		System.out.printf(String.format("%-14s", "Max Occ."));
+		System.out.println("Fees");
+		System.out.println();
+		
+		for(int i = 0; i < sites.size(); i++) {
+			for(int j = 0; j < resSearch.size(); j++) {
+				if(sitesByPark.get(i) != resSearch.get(j).getSite_id()) {
+					System.out.println(sitesByPark.get(i) + " " + sites.get(i).getMax_occupancy() + " $" + dailyFee );
+					System.out.println();
 				}
 			}
 		}

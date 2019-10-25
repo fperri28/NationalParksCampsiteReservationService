@@ -73,9 +73,21 @@ public class JDBCCampgroundDAO implements CampgroundDAO{
 	}
 
 	@Override
-	public BigDecimal getCampgroundRate(Campground aCampground) {
-		// TODO Auto-generated method stub
-		return null;
+	public BigDecimal getCampgroundRate(int campgroundId) {
+		List<Campground> campByPark = new ArrayList<Campground>();
+		
+		String sqlListAllCampgroundsQuery = "SELECT daily_fee "+
+				   							"FROM Campground " +
+				   							"WHERE park_id = ?";
+		SqlRowSet results = jdbcTemplate.queryForRowSet(sqlListAllCampgroundsQuery, campgroundId);
+
+		while(results.next()) {	
+			Campground dailyRates = mapRowToCampground(results);
+			campByPark.add(dailyRates);
+		}
+		
+		BigDecimal dailyRate = campByPark.get(0).getDaily_fee(); 
+		return dailyRate;
 	}
 
 	@Override

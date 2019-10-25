@@ -2,6 +2,7 @@ package com.techelevator;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -179,14 +180,16 @@ public class CampgroundCLI {
 	}
 
 	public void displayAvailRes() {
-		List<Reservation> res = resDAO.getReservationsByDate(1, LocalDate.of(2019, 10, 25), LocalDate.of(2019, 10, 30));
-		int siteID = res.get(0).getSite_id();
+		List<Reservation> reservedSites = resDAO.getReservationsByDate(1, LocalDate.of(2019, 10, 25), LocalDate.of(2019, 10, 30));
 		
 		List<Park> park = parkDAO.getParkByName(prevPark);
 		int parkID = park.get(0).getPark_id();
+		
 		List<Campground> camp = campDAO.getCampgroundByPark(parkID);
-		List<Site> sites;
+		List<Site> sites = null;
 		List<Integer> sitesByPark = new ArrayList<Integer> ();
+		BigDecimal dailyFee = camp.get(0).getDaily_fee();
+		
 		for(Campground cur: camp) {
 			sites = siteDAO.getSiteByCampground(cur.getCampground_id());
 			for(Site curr: sites) {
@@ -194,10 +197,16 @@ public class CampgroundCLI {
 			}
 		}
 		
-		for(int i = 0; i < sitesByPark.size(); i++) {
-			for(int j = 0; j < res.size(); j++) {
-				if(sitesByPark.get(i) != res.get(j).getSite_id()) {
-					System.out.println(sitesByPark.get(i));
+		System.out.printf(String.format("%-8s", "Sites"));
+		System.out.printf(String.format("%-14s", "Max Occ."));
+		System.out.println("Fees");
+		System.out.println();
+		
+		for(int i = 0; i < sites.size(); i++) {
+			for(int j = 0; j < reservedSites.size(); j++) {
+				if(sitesByPark.get(i) != reservedSites.get(j).getSite_id()) {
+					System.out.println(sitesByPark.get(i) + " " + sites.get(i).getMax_occupancy() + " $" + dailyFee );
+					System.out.println();
 				}
 			}
 		}

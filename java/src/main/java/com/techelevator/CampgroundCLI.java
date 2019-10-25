@@ -111,9 +111,6 @@ public class CampgroundCLI {
 			if(choice.equals(VIEW_CAMPGROUNDS)){
 				System.out.println("\n" + park + " National Park Campgrounds\n");
 				displayCampgrounds(displayCampgroundsByPark(park));
-				
-				
-				
 				Reservations();
 			} else if(choice.equals(SEARCH_RESERVATIONS)) {
 				//Reservations(); This needs to be modified to show all remove the campsite selection portion
@@ -200,7 +197,22 @@ public class CampgroundCLI {
 		LocalDate depDate = LocalDate.parse(inputDepartureDate, formatter);
 		
 		List<Site> availRes = siteDAO.getAvailableResBySite(userSelCampId, parkId, arrDate, depDate);
-		displayAvailRes(availRes);
+		
+		if(availRes.size() == 0) { 
+			displayAvailRes(availRes);
+		} else {
+			
+			System.out.println("No available sites for these dates.");
+			String inputAltDate = null;
+			do {
+				inputAltDate = getUserInput("Would you like to search an alternate dates? Y/N").toUpperCase();
+			if (inputAltDate.contains("Y")) {
+				campSiteSearch();
+			} else if(inputAltDate.contains("N")){
+				return;
+			}
+			} while (!inputAltDate.equals("Y") && !inputAltDate.equals("N"));
+		}
 	}
 	
 	public void displayCampgrounds(List<Campground> campgroundsByPark)	{
@@ -244,6 +256,8 @@ public class CampgroundCLI {
 		System.out.printf(String.format("%-10s", "Utility"));
 		System.out.printf(String.format("%-10s", "Fees"));
 		System.out.println("\n============================================================");
+		
+
 		for(Site cur: resSearch) {
 			System.out.printf(String.format("%-8s", cur.getSite_id()));
 			System.out.printf(String.format("%-10s", cur.getMax_occupancy()));
@@ -253,8 +267,6 @@ public class CampgroundCLI {
 			//System.out.printf((String.format("%-20s", cur))); // <--- Cost 
 			System.out.println();
 		}
-
-		
 	}
 
 	public void displayParkDetails(String choice) {

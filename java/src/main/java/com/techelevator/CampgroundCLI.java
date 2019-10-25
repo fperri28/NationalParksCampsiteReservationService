@@ -113,7 +113,7 @@ public class CampgroundCLI {
 				displayCampgrounds(displayCampgroundsByPark(park));
 				Reservations();
 			} else if(choice.equals(SEARCH_RESERVATIONS)) {
-				//Reservations(); This needs to be modified to show all remove the campsite selection portion
+				Reservations();
 			} else if(choice.equals(RETURN_TO_MAIN_MENU)) {
 				run();
 			}
@@ -127,11 +127,27 @@ public class CampgroundCLI {
 
 	public void Reservations() {
 
-		String choice = (String) campgroundMenu.getChoiceFromOptions(RESERVATION_MENU_OPTIONS); 
+//		String choice = (String) campgroundMenu.getChoiceFromOptions(RESERVATION_MENU_OPTIONS); 
+		
+		Integer userReservationId = Integer.parseInt(getUserInput(	"\n\nPlease Enter Your Reservation ID: " +
+				"(enter 0 to cancel)"));
+	
+		Reservation reservation = resDAO.getReservationById(userReservationId);
 
-		if(choice.equals(SEARCH_FOR_AVAILABLE_RESERVATIONS)){
-			campSiteSearch();
-		} else if(choice.equals(MENU_EXIT)) {
+		if(userReservationId.equals(0)) {
+			return;
+		}else if(reservation != null){
+			System.out.println();
+			System.out.println("Congratulations " + reservation.getName() + ", you are booked.");
+			System.out.println("Your reservation id is : " + reservation.getReservation_id());
+			System.out.println("Your site id is : " + reservation.getSite_id());
+			System.out.println("Your arrival date is: " + reservation.getFrom_date());
+			System.out.println("Your departure date is: " + reservation.getTo_date());
+			return;
+			
+		} else {
+			System.out.println("Invalid Reservation ID, please try again.");
+			Reservations();
 			return;
 		}
 	}
@@ -262,11 +278,6 @@ public class CampgroundCLI {
 		
 
 		for(Site cur: resSearch) {
-			
-//			int campId = cur.getCampground_id();
-//			int siteId = cur.getSite_id();
-//			Site dailyFee = siteDAO.getDailyFeeByCampgroundId(campId, siteId);
-//			BigDecimal dailyFee = new BigDecimal (campDAO.getCampgroundRate(cur.getCampground_id()));
 			
 			System.out.printf(String.format("%-8s", cur.getSite_id()));
 			System.out.printf(String.format("%-10s", cur.getMax_occupancy()));

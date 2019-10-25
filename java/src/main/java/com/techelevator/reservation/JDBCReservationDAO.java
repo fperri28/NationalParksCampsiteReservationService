@@ -136,6 +136,26 @@ GROUP BY site.campground_id, reservation.reservation_id, site.site_id
 		}
 		return theReservation;
 	}
+	
+	@Override
+	public List<Reservation> getReservationByName(String name) {
+		List<Reservation> theReservation = new ArrayList<Reservation>();
+		
+		String searchTermName = "%" + name + "%";
+		String sqlListReservation = "SELECT * " +
+									"FROM reservation " +
+									"WHERE name " +
+									"ILIKE ? ";
+		
+		
+		SqlRowSet results = jdbcTemplate.queryForRowSet(sqlListReservation, searchTermName);
+		
+		while(results.next()) {
+			theReservation.add(mapRowToReservation(results));
+		}
+		
+		return theReservation;
+	}
 
 	@Override
 	public List<Reservation> getResByMaxOcc(int occ) {

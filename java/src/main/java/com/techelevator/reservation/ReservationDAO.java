@@ -25,6 +25,8 @@ public interface ReservationDAO {
 	//	Select a Reservation by it's ID (Primary Key)
 	public Reservation getReservationById(int aReservationId);
 	
+	public List<Reservation> getReservationByName(String name);
+	
 	// search Reservations by max occupancy
 	public List<Reservation> getResByMaxOcc(int occ);
 	

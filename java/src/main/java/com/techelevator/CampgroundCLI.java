@@ -248,7 +248,7 @@ public class CampgroundCLI {
 		List<Site> availRes = siteDAO.getAvailableResBySite(userSelCampId, parkId, arrDate, depDate);
 				
 		if(availRes.size() > 0) { 
-			displayAvailRes(availRes);
+			displayAvailRes(availRes, stayDays);
 		} else {
 			
 			System.out.println("\nNo available sites for these dates.");
@@ -298,7 +298,7 @@ public class CampgroundCLI {
 		
 	}
 	
-	public void displayAvailRes(List<Site> resSearch) {  
+	public void displayAvailRes(List<Site> resSearch, int duration) {  
 		
 		System.out.println();
 		System.out.printf(String.format("%-8s", "Sites"));
@@ -317,7 +317,7 @@ public class CampgroundCLI {
 			System.out.printf((String.format("%-15s", cur.isAccessible()))); 
 			System.out.printf((String.format("%-10s", cur.getMax_rv_length()))); 
 			System.out.printf((String.format("%-10s", cur.isUtilities())));
-			System.out.printf((String.format("%-20s", "$" + campDAO.getCampgroundRate(cur.getCampground_id()).setScale(2)))); // <--- Cost 
+			System.out.printf((String.format("%-20s", "$" + campDAO.getCampgroundRate(cur.getCampground_id() * duration).setScale(2)))); // <--- Cost 
 			System.out.println();
 		}
 	}

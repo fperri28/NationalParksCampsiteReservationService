@@ -184,15 +184,25 @@ public class CampgroundCLI {
 		
 		List<Park> park = parkDAO.getParkByName(prevPark);
 		int parkID = park.get(0).getPark_id();
-		
 		List<Campground> camp = campDAO.getCampgroundByPark(parkID);
-		
+		List<Site> sites;
+		List<Integer> sitesByPark = new ArrayList<Integer> ();
 		for(Campground cur: camp) {
-			List<Site> sites = siteDAO.getSiteByCampground(cur.getCampground_id());
+			sites = siteDAO.getSiteByCampground(cur.getCampground_id());
 			for(Site curr: sites) {
-				System.out.println(curr.getSite_id());
+				sitesByPark.add(curr.getSite_id());
 			}
 		}
+		
+		for(int i = 0; i < sitesByPark.size(); i++) {
+			for(int j = 0; j < res.size(); j++) {
+				if(sitesByPark.get(i) != res.get(j).getSite_id()) {
+					System.out.println(sitesByPark.get(i));
+				}
+			}
+		}
+		
+		
 	}
 
 	public static void endMethodProcessing() {

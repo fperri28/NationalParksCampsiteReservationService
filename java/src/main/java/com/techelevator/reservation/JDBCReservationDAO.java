@@ -20,35 +20,20 @@ public class JDBCReservationDAO implements ReservationDAO{
 		this.jdbcTemplate = new JdbcTemplate(dataSource);
 	}
 	
-/*
- * 
- * SELECT *
-FROM reservation
-INNER JOIN site ON reservation.site_id = site.site_id
-WHERE from_date  BETWEEN '2019-01-01' AND '2019-12-30'
-AND campground_id = 2
-GROUP BY site.campground_id, reservation.reservation_id, site.site_id 
-; 
- * 
- * 
- * 
- */
-	
-	
 	
 	@Override
-	public Reservation addReservations(String name, LocalDate fromDate, LocalDate toDate) {
+	public Reservation addReservations(String name, LocalDate fromDate, LocalDate toDate, int siteId) {
 		Reservation newRes = new Reservation();
 		
-		String sqlAddNewRes = 	"INSERT INTO park " + 
+		String sqlAddNewRes = 	"INSERT INTO reservation " + 
 								"(reservation_id, site_id, name, from_date, to_date, create_date) " + 
 								"VALUES (?, ?, ?, ?, ?, ?)";
 		
-		newRes.setReservation_id(getNextReservationId()); 
 		newRes.setName(name);
 		newRes.setFrom_date(fromDate);
 		newRes.setTo_date(toDate);
 		newRes.setCreate_date(LocalDate.now());
+		newRes.setSite_id(siteId);
 		
 		jdbcTemplate.update(sqlAddNewRes, 
 							newRes.getReservation_id(), 

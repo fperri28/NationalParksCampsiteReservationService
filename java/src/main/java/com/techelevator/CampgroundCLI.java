@@ -134,6 +134,7 @@ public class CampgroundCLI {
 
 		if(choice.equals(SEARCH_FOR_AVAILABLE_RESERVATIONS)){
 			campSiteSearch();
+
 		} else if(choice.equals(MENU_EXIT)) {
 			return;
 		}
@@ -250,6 +251,7 @@ public class CampgroundCLI {
 				
 		if(availRes.size() > 0) { 
 			displayAvailRes(availRes, stayDays);
+			selectReservation(arrDate, depDate);
 		} else {
 			
 			System.out.println("\nNo available sites for these dates.");
@@ -264,6 +266,14 @@ public class CampgroundCLI {
 			} while (!inputAltDate.equals("Y") && !inputAltDate.equals("N"));
 		}
 	}
+	
+	private void selectReservation(LocalDate fromDate, LocalDate toDate) {
+		Integer userSelSite = Integer.parseInt(getUserInput("\n\nWhich site should be reserved (enter 0 to cancel)?"));
+		String userName = getUserInput("\nWhat name should the reservation be made under?");
+		Reservation newRes = resDAO.addReservations(userName, fromDate, toDate, userSelSite);
+		System.out.println(newRes.getReservation_id());
+	}
+	
 	
 	public void displayCampgrounds(List<Campground> campgroundsByPark)	{
 		
@@ -318,7 +328,7 @@ public class CampgroundCLI {
 			System.out.printf((String.format("%-15s", cur.isAccessible()))); 
 			System.out.printf((String.format("%-10s", cur.getMax_rv_length()))); 
 			System.out.printf((String.format("%-10s", cur.isUtilities())));
-			System.out.printf((String.format("%-20s", "$" + campDAO.getCampgroundRate(cur.getCampground_id() * duration).setScale(2)))); // <--- Cost 
+			System.out.printf((String.format("%-20s", "$" + campDAO.getCampgroundRate(cur.getCampground_id() * duration).setScale(2)))); 
 			System.out.println();
 		}
 	}

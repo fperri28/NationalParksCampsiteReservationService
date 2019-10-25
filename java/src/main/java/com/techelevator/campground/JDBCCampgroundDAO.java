@@ -111,6 +111,24 @@ public class JDBCCampgroundDAO implements CampgroundDAO{
 		
 	}
 	
+	@Override
+	public List<Campground> getOpen(Campground campgroundId) {
+		List<Campground>openForBusiness = new ArrayList<Campground>();
+		String sqlListOpenMonthQuery = " SELECT open_from_mm, open_to_mm " +
+										" FROM campground " +
+										" WHERE campground_id = ? ";
+		
+		SqlRowSet results = jdbcTemplate.queryForRowSet(sqlListOpenMonthQuery, campgroundId);
+		
+		while(results.next()) {	
+			Campground aCampground = mapRowToCampground(results);
+			campByPark.add(aCampground);
+		}
+		
+		return openForBusiness;
+	}
+
+	
 	public String stringMonth(String month) {
 		
 		switch(month) {
@@ -147,11 +165,6 @@ public class JDBCCampgroundDAO implements CampgroundDAO{
 //	-------------------------------	HELPER METHODS	------------------------------
 	
 	
-	private List<Campground> open(String monthOpen, String monthClose) {
-		List<Campground>openForBusiness = new ArrayList<Campground>();
-		
-		return openForBusiness;
-	}
 	
 
 	private int getNextCampgroundId() {

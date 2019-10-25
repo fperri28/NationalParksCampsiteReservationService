@@ -21,8 +21,8 @@ public interface CampgroundDAO {
 	public BigDecimal getCampgroundRate(int campgroundId);//	Return the rate for a campground
 	
 	public String stringMonth(String month);
-	//TODO Add a read method for getCampgroundByOpenDate?
 	
+	public List<Campground> getOpen(Campground campgroundId);
 	
 	//	Update Method - Update (returns nothing)
 	public void changeCampgroundData(Campground aCampground);	//	Update a campground in the table using values in the location object

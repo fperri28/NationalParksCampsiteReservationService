@@ -170,6 +170,39 @@ public class CampgroundCLI {
 	   return campgroundsByPark;
 	}
 	
+	private void campSiteSearch() {
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/d/yyyy");
+		Integer userSelCampId = Integer.parseInt(getUserInput("Which campground(enter 0 to cancel)?"));
+		// NEED TO LIMIT SELECTIONS TO THE CAMPGROUND OPTIONS AND 0 TO EXIT
+		List<Campground> campgrounds = displayCampgroundsByPark(prevPark);
+		Set<Integer> idList = new HashSet<Integer> ();
+		int parkId = parkDAO.getParkByName(prevPark).get(0).getPark_id();
+		
+		for(Campground cur: campgrounds) {
+			idList.add(cur.getCampground_id());
+		}
+		
+		
+		if(userSelCampId == 0) {
+			return;
+		} else if(!idList.contains(userSelCampId)) {
+			System.out.println("INVALID SELECTION");
+			return;
+		}
+		
+		String inputArrDate = getUserInput("What is the arrival date?__/__/____");
+		// NEED TO THROW ERROR MESSAGE IF INPUT IS NOT VALID
+		
+		LocalDate arrDate = LocalDate.parse(inputArrDate, formatter);
+		
+		String inputDepartureDate = getUserInput("What is the departure date?__/__/____");
+		// NEED TO THROW ERROR MESSAGE IF INPUT IS NOT VALID
+		LocalDate depDate = LocalDate.parse(inputDepartureDate, formatter);
+		
+		List<Site> availRes = siteDAO.getAvailableResBySite(userSelCampId, parkId, arrDate, depDate);
+		displayAvailRes(availRes);
+	}
+	
 	public void displayCampgrounds(List<Campground> campgroundsByPark)	{
 		System.out.printf(String.format("%-6s", "ID"));
 		System.out.printf(String.format("%-35s", "Campground Name")); 
@@ -178,7 +211,6 @@ public class CampgroundCLI {
 		System.out.printf(String.format("%-13s", "Daily Fee"));
 		System.out.println();
 		System.out.println("============================================================================");
-
 
 		if(campgroundsByPark.size() > 0) {
 
@@ -202,66 +234,8 @@ public class CampgroundCLI {
 		}
 		
 	}
-
-	
-	private void campSiteSearch() {
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/d/yyyy");
-		Integer userSelCampId = Integer.parseInt(getUserInput("Which campground(enter 0 to cancel)?"));
-		// NEED TO LIMIT SELECTIONS TO THE CAMPGROUND OPTIONS AND 0 TO EXIT
-		List<Campground> campgrounds = displayCampgroundsByPark(prevPark);
-		Set<Integer> idList = new HashSet<Integer> ();
-		int parkId = parkDAO.getParkByName(prevPark).get(0).getPark_id();
-		
-		for(Campground cur: campgrounds) {
-			idList.add(cur.getCampground_id());
-		}
-		 
-		
-		 if(userSelCampId == 0) {
-			 return;
-		 } else if(!idList.contains(userSelCampId)) {
-			 System.out.println("INVALID SELECTION");
-			 return;
-		 }
-		
-		String inputArrDate = getUserInput("What is the arrival date?__/__/____");
-		// NEED TO THROW ERROR MESSAGE IF INPUT IS NOT VALID
-		
-		LocalDate arrDate = LocalDate.parse(inputArrDate, formatter);
-		
-		String inputDepartureDate = getUserInput("What is the departure date?__/__/____");
-		// NEED TO THROW ERROR MESSAGE IF INPUT IS NOT VALID
-		LocalDate depDate = LocalDate.parse(inputDepartureDate, formatter);
-		
-		List<Site> availRes = siteDAO.getAvailableResBySite(userSelCampId, parkId, arrDate, depDate);
-		displayAvailRes(availRes);
-	}
-	
-	@SuppressWarnings("resource")
-	private String getUserInput(String prompt) {
-		System.out.print(prompt + " >>> ");
-		return new Scanner(System.in).nextLine();
-	}
-	
-	
 	
 	public void displayAvailRes(List<Site> resSearch) {  
-		
-//		List<Park> park = parkDAO.getParkByName(prevPark);
-//		int parkID = park.get(0).getPark_id();
-//		
-//		List<Campground> camp = campDAO.getCampgroundByPark(parkID);
-//		List<Site> sites = null;
-//		List<Integer> sitesByPark = new ArrayList<Integer> ();
-//		BigDecimal dailyFee = camp.get(0).getDaily_fee();
-//		
-//		for(Campground cur: camp) {
-//			sites = siteDAO.getSiteByCampground(cur.getCampground_id());
-//			for(Site curr: sites) {
-//				sitesByPark.add(curr.getSite_id());
-//			}
-//		}
-		
 		
 		System.out.printf(String.format("%-8s", "Sites"));
 		System.out.printf(String.format("%-10s", "Max Occ."));
@@ -269,7 +243,7 @@ public class CampgroundCLI {
 		System.out.printf(String.format("%-10s", "RV Len."));
 		System.out.printf(String.format("%-10s", "Utility"));
 		System.out.printf(String.format("%-10s", "Fees"));
-		System.out.println("\n================================");
+		System.out.println("\n============================================================");
 		for(Site cur: resSearch) {
 			System.out.printf(String.format("%-8s", cur.getSite_id()));
 			System.out.printf(String.format("%-10s", cur.getMax_occupancy()));
@@ -312,6 +286,13 @@ public class CampgroundCLI {
 		System.out.println("Thanks for visiting the National Park Campsite website." +
 				"\n \"In all things of nature there is something of the marvelous.\" Aristotle");
 		System.exit(0);
+	}
+	
+	
+	@SuppressWarnings("resource")
+	private String getUserInput(String prompt) {
+		System.out.print(prompt + " >>> ");
+		return new Scanner(System.in).nextLine();
 	}
 	
 	private void displayApplicationBanner() {

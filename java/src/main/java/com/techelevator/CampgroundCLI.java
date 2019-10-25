@@ -112,9 +112,9 @@ public class CampgroundCLI {
 			if(choice.equals(VIEW_CAMPGROUNDS)){
 				System.out.println("\n" + park + " National Park Campgrounds\n");
 				displayCampgrounds(displayCampgroundsByPark(park));
-				Reservations();
+				reservationsMenu();
 			} else if(choice.equals(SEARCH_RESERVATIONS)) {
-				Reservations();
+				reservations();
 			} else if(choice.equals(RETURN_TO_MAIN_MENU)) {
 				run();
 			}
@@ -126,31 +126,16 @@ public class CampgroundCLI {
 	 * Display the sub menu and process option chosen
 	 ***************************************************************************************************************************/
 
-	public void Reservations() {
+	public void reservationsMenu() {
 
-//		String choice = (String) campgroundMenu.getChoiceFromOptions(RESERVATION_MENU_OPTIONS); 
-		
-		Integer userReservationId = Integer.parseInt(getUserInput(	"\n\nPlease Enter Your Reservation ID: " +
-				"(enter 0 to cancel)"));
-	
-		Reservation reservation = resDAO.getReservationById(userReservationId);
+		String choice = (String) campgroundMenu.getChoiceFromOptions(RESERVATION_MENU_OPTIONS); 
 
-		if(userReservationId.equals(0)) {
-			return;
-		}else if(reservation != null){
-			System.out.println();
-			System.out.println("Congratulations " + reservation.getName() + ", you are booked.");
-			System.out.println("Your reservation id is : " + reservation.getReservation_id());
-			System.out.println("Your site id is : " + reservation.getSite_id());
-			System.out.println("Your arrival date is: " + reservation.getFrom_date());
-			System.out.println("Your departure date is: " + reservation.getTo_date());
-			return;
-			
-		} else {
-			System.out.println("Invalid Reservation ID, please try again.");
-			Reservations();
+		if(choice.equals(SEARCH_FOR_AVAILABLE_RESERVATIONS)){
+			campSiteSearch();
+		} else if(choice.equals(MENU_EXIT)) {
 			return;
 		}
+		
 	}
 	
 	
@@ -158,6 +143,31 @@ public class CampgroundCLI {
 	/********************************************************************************************************
 	 * Methods used to perform processing
 	 ********************************************************************************************************/
+
+	
+	
+	public void reservations() {
+	Integer userReservationId = Integer.parseInt(getUserInput(	"\n\nPlease Enter Your Reservation ID: " +
+			"(enter 0 to cancel)"));
+	
+	Reservation reservation = resDAO.getReservationById(userReservationId);
+	
+	if(userReservationId.equals(0)) {
+		return;
+	}else if(reservation != null){
+		System.out.println();
+		System.out.println("Congratulations " + reservation.getName() + ", you are booked.");
+		System.out.println("Your reservation id is : " + reservation.getReservation_id());
+		System.out.println("Your site id is : " + reservation.getSite_id());
+		System.out.println("Your arrival date is: " + reservation.getFrom_date());
+		System.out.println("Your departure date is: " + reservation.getTo_date());
+		return;
+		
+	} else {
+		System.out.println("Invalid Reservation ID, please try again.");
+		reservations();
+		return;
+	}}
 
 	public Object[] displayParks() {
 		List<Park> parks = parkDAO.getAllParks();
@@ -180,14 +190,14 @@ public class CampgroundCLI {
 	public List<Campground> displayCampgroundsByPark(String parkName) {
 		List<Park> parksDetails = parkDAO.getParkByName(parkName);
 		int parkId = parksDetails.get(0).getPark_id();
-		List<Campground> campgroundsByPark = campDAO.getCampgroundByPark(parkId); //<--- this is what i want for the viable search options
+		List<Campground> campgroundsByPark = campDAO.getCampgroundByPark(parkId); 
 	   return campgroundsByPark;
 	}
 	
 	private void campSiteSearch() {
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/d/yyyy");
 		Integer userSelCampId = Integer.parseInt(getUserInput("\n\nWhich campground(enter 0 to cancel)?"));
-		// NEED TO LIMIT SELECTIONS TO THE CAMPGROUND OPTIONS AND 0 TO EXIT
+	
 		List<Campground> campgrounds = displayCampgroundsByPark(prevPark);
 		Set<Integer> idList = new HashSet<Integer> ();
 		int parkId = parkDAO.getParkByName(prevPark).get(0).getPark_id();
@@ -196,7 +206,8 @@ public class CampgroundCLI {
 			idList.add(cur.getCampground_id());
 		}
 		
-		
+		////// WISHLIST OPEN SEASON CONDITIONAL STATEMENT
+				
 		if(userSelCampId == 0) {
 			return;
 		} else if(!idList.contains(userSelCampId)) {

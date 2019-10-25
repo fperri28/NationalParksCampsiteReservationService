@@ -140,7 +140,42 @@ public class JDBCSiteDAO implements SiteDAO {
 		return campgroundBySite;
 	}
 	
+	@Override
+	public String stringTrueFalseSwitch(boolean trueFalseStatement) {
+
+		int trueOrFalse;
+		if(trueFalseStatement == true){
+			trueOrFalse = 1;
+		}else{
+			trueOrFalse = 0;
+		}
+		switch (trueOrFalse){
+		case 1:
+			if (trueFalseStatement){
+				return "Yes";
+			}
+			break;
+		case 0:
+			if (!trueFalseStatement){
+				return "No";
+			}
+			break;
+		default:
+			return "Unknown";
+		}
+		return "Unknown";
+	}
 	
+	@Override
+	public String stringRV(Integer rvLength) {
+		
+		if (rvLength == 0) {
+			return "N/A";
+		} else {
+			String stringLength = rvLength.toString();
+			return stringLength;
+		}
+	}
 
 	@Override
 	public void changeSiteData(Site aSite) {

@@ -78,32 +78,7 @@ GROUP BY site.campground_id, reservation.reservation_id, site.site_id
 		return allReservations;
 	}
 	
-	@Override
-	public List<Reservation> getAvailableResBySite(int campId, int parkId, LocalDate fromDate, LocalDate toDate){
-		List<Reservation> reservationByAvailableSites = new ArrayList<Reservation>();
-		
-		String sqlListAllEmpQuery = 	" SELECT * " +
-										" FROM site " +
-										" INNER JOIN campground " +
-										" ON campground.campground_id = site.campground_id " +
-										" WHERE park_id = ? " +
-										" AND campground.campground_id = ? " +
-										" site_id != (SELECT reservation.site_id " +
-										" FROM reservation " +
-										" INNER JOIN site ON reservation.site_id = site.site_id " +
-										" WHERE from_date BETWEEN ? AND ? " +
-										" AND to_date BETWEEN ? AND ? " +
-										" GROUP BY site.campground_id, reservation.reservation_id, site,site_id )";
-		
-		SqlRowSet results = jdbcTemplate.queryForRowSet(sqlListAllEmpQuery, parkId, campId, fromDate, toDate, fromDate, toDate);
 
-		while(results.next()) {	
-			Reservation aFreeSite = mapRowToReservation(results);
-			reservationByAvailableSites.add(aFreeSite);
-		}
-		
-		return reservationByAvailableSites;
-	}
 	
 
 	@Override

@@ -210,6 +210,7 @@ public class CampgroundCLI {
 		// NEED TO LIMIT SELECTIONS TO THE CAMPGROUND OPTIONS AND 0 TO EXIT
 		List<Campground> campgrounds = displayCampgroundsByPark(prevPark);
 		Set<Integer> idList = new HashSet<Integer> ();
+		int parkId = parkDAO.getParkByName(prevPark).get(0).getPark_id();
 		
 		for(Campground cur: campgrounds) {
 			idList.add(cur.getCampground_id());
@@ -227,12 +228,13 @@ public class CampgroundCLI {
 		// NEED TO THROW ERROR MESSAGE IF INPUT IS NOT VALID
 		
 		LocalDate arrDate = LocalDate.parse(inputArrDate, formatter);
+		
 		String inputDepartureDate = getUserInput("What is the departure date?__/__/____");
 		// NEED TO THROW ERROR MESSAGE IF INPUT IS NOT VALID
 		LocalDate depDate = LocalDate.parse(inputDepartureDate, formatter);
 		
-		List<Reservation> reservedSites = resDAO.getReservationsByDate(userSelCampId, arrDate, depDate);
-		displayAvailRes(reservedSites);
+		List<Site> availRes = siteDAO.getAvailableResBySite(userSelCampId, parkId, arrDate, depDate);
+		displayAvailRes(availRes);
 	}
 	
 	@SuppressWarnings("resource")
@@ -243,39 +245,41 @@ public class CampgroundCLI {
 	
 	
 	
-	public void displayAvailRes(List<Reservation> resSearch) {  
+	public void displayAvailRes(List<Site> resSearch) {  
 		
-		List<Park> park = parkDAO.getParkByName(prevPark);
-		int parkID = park.get(0).getPark_id();
+//		List<Park> park = parkDAO.getParkByName(prevPark);
+//		int parkID = park.get(0).getPark_id();
+//		
+//		List<Campground> camp = campDAO.getCampgroundByPark(parkID);
+//		List<Site> sites = null;
+//		List<Integer> sitesByPark = new ArrayList<Integer> ();
+//		BigDecimal dailyFee = camp.get(0).getDaily_fee();
+//		
+//		for(Campground cur: camp) {
+//			sites = siteDAO.getSiteByCampground(cur.getCampground_id());
+//			for(Site curr: sites) {
+//				sitesByPark.add(curr.getSite_id());
+//			}
+//		}
 		
-		List<Campground> camp = campDAO.getCampgroundByPark(parkID);
-		List<Site> sites = null;
-		List<Integer> sitesByPark = new ArrayList<Integer> ();
-		BigDecimal dailyFee = camp.get(0).getDaily_fee();
-		
-		for(Campground cur: camp) {
-			sites = siteDAO.getSiteByCampground(cur.getCampground_id());
-			for(Site curr: sites) {
-				sitesByPark.add(curr.getSite_id());
-			}
-		}
 		
 		System.out.printf(String.format("%-8s", "Sites"));
-		System.out.printf(String.format("%-15s", "Max Occ."));
-		System.out.printf(String.format("%-20s", "Fees"));
+		System.out.printf(String.format("%-10s", "Max Occ."));
+		System.out.printf(String.format("%-15s", "Accessible?"));
+		System.out.printf(String.format("%-10s", "RV Len."));
+		System.out.printf(String.format("%-10s", "Utility"));
+		System.out.printf(String.format("%-10s", "Fees"));
 		System.out.println("\n================================");
-		
-		for(int i = 0; i < sites.size(); i++) {
-			for(int j = 0; j < resSearch.size(); j++) {
-				if(sitesByPark.get(i) != resSearch.get(j).getSite_id()) {
-					System.out.printf(String.format("%-8s", sitesByPark.get(i)));
-					System.out.printf(String.format("%-14s", sites.get(i).getMax_occupancy()));
-					System.out.printf((String.format("%-20s", " $" + dailyFee)));
-					System.out.println();
-				}
-			}
+		for(Site cur: resSearch) {
+			System.out.printf(String.format("%-8s", cur.getSite_id()));
+			System.out.printf(String.format("%-10s", cur.getMax_occupancy()));
+			System.out.printf((String.format("%-15s", cur.isAccessible()))); 
+			System.out.printf((String.format("%-10s", cur.getMax_rv_length()))); 
+			System.out.printf((String.format("%-10s", cur.isUtilities())));
+			//System.out.printf((String.format("%-20s", cur))); // <--- Cost 
+			System.out.println();
 		}
-		
+
 		
 	}
 

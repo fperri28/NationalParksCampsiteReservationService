@@ -21,8 +21,6 @@ public interface ReservationDAO {
 	//search Reservations by Site
 	public List<Reservation> getReservationsBySite(int siteId, int campId);
 	
-	//return all available reservations by site
-	public List<Reservation> getAvailableResBySite(int campId, int parkId, LocalDate fromDate, LocalDate toDate);
 	
 	//	Select a Reservation by it's ID (Primary Key)
 	public Reservation getReservationById(int aReservationId);

@@ -1,9 +1,12 @@
 package com.techelevator.site;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.jdbc.support.rowset.SqlRowSet;
+
+import com.techelevator.reservation.Reservation;
 
 public interface SiteDAO {
 
@@ -20,7 +23,10 @@ public interface SiteDAO {
 	public List<Site> getSiteByCampground(int campgroundId);	//	Return all sites in a site
 
 	public List<Site> getCampgroundBySite(int siteId);
-		
+	
+	//return all available reservations by site
+	public List<Site> getAvailableResBySite(int campId, int parkId, LocalDate fromDate, LocalDate toDate);
+			
 	
 	
 	//	Update Method - Update (returns nothing)

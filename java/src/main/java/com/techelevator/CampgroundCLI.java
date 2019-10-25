@@ -113,7 +113,7 @@ public class CampgroundCLI {
 			String choice = (String) campgroundMenu.getChoiceFromOptions(SUB_MENU_OPTIONS); 
 			if(choice.equals(VIEW_CAMPGROUNDS)){
 				System.out.println("\n" + park + " National Park Campgrounds\n");
-				displayCampgrounds(displayCampgroundsByPark(park));
+				displayCampgroundsByPark();
 				reservationsMenu();
 			} else if(choice.equals(SEARCH_RESERVATIONS)) {
 				reservations();
@@ -190,19 +190,16 @@ public class CampgroundCLI {
 	}
 	
 	
-	public List<Campground> displayCampgroundsByPark(String parkName) {
-		//List<Park> parksDetails = parkDAO.getParksByName(parkName);
+	public void displayCampgroundsByPark() {
 		List<Campground> campgroundsByPark = campDAO.getCampgroundByPark(prevPark); 
-	   return campgroundsByPark;
+	   displayCampgrounds(campgroundsByPark);
 	}
 	
 	private void campSiteSearch() {
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/d/yyyy");
 		Integer userSelCampId = Integer.parseInt(getUserInput("\n\nWhich campground(enter 0 to cancel)?"));
-		String parkName = parkDAO.getParkById(prevPark).getName();
-		List<Campground> campgrounds = displayCampgroundsByPark(parkName);
+		List<Campground> campgrounds = campDAO.getCampgroundByPark(prevPark);
 		Set<Integer> idList = new HashSet<Integer> ();
-		//int parkId = parkDAO.getParkByName(prevPark).get(0).getPark_id();
 		
 		for(Campground cur: campgrounds) {
 			idList.add(cur.getCampground_id());

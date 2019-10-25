@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.time.LocalDate;
+import java.time.Period;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
@@ -240,11 +241,15 @@ public class CampgroundCLI {
 				System.out.println("Please insert valid month 1-12");
 			}
 		}
-		while(!success);		
+		while(!success);			
+	 
+	    Period intervalPeriod = Period.between(arrDate, depDate);
+	    int stayDays = intervalPeriod.getDays();
+				
 		List<Site> availRes = siteDAO.getAvailableResBySite(userSelCampId, parkId, arrDate, depDate);
 				
 		if(availRes.size() > 0) { 
-			displayAvailRes(availRes);
+			displayAvailRes(availRes, stayDays);
 		} else {
 			
 			System.out.println("\nNo available sites for these dates.");
@@ -294,7 +299,7 @@ public class CampgroundCLI {
 		
 	}
 	
-	public void displayAvailRes(List<Site> resSearch) {  
+	public void displayAvailRes(List<Site> resSearch, int duration) {  
 		
 		System.out.println();
 		System.out.printf(String.format("%-8s", "Sites"));
@@ -313,7 +318,7 @@ public class CampgroundCLI {
 			System.out.printf((String.format("%-15s", cur.isAccessible()))); 
 			System.out.printf((String.format("%-10s", cur.getMax_rv_length()))); 
 			System.out.printf((String.format("%-10s", cur.isUtilities())));
-			System.out.printf((String.format("%-20s", "$" + campDAO.getCampgroundRate(cur.getCampground_id()).setScale(2)))); // <--- Cost time duration 
+			System.out.printf((String.format("%-20s", "$" + campDAO.getCampgroundRate(cur.getCampground_id() * duration).setScale(2)))); // <--- Cost 
 			System.out.println();
 		}
 	}

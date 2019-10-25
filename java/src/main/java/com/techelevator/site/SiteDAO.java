@@ -29,7 +29,9 @@ public interface SiteDAO {
 	//return all available reservations by site
 	public List<Site> getAvailableResBySite(int campId, int parkId, LocalDate fromDate, LocalDate toDate);
 			
+	public String stringTrueFalseSwitch(boolean trueFalseStatement);
 	
+	public String stringRV(Integer rvLength);
 	
 	//	Update Method - Update (returns nothing)
 	public void changeSiteData(Site aSite);						//	Update a Site in the table using values in the location object

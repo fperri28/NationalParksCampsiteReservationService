@@ -325,10 +325,10 @@ public class CampgroundCLI {
 			
 			System.out.printf(String.format("%-8s", cur.getSite_id()));
 			System.out.printf(String.format("%-10s", cur.getMax_occupancy()));
-			System.out.printf((String.format("%-15s", cur.isAccessible()))); 
-			System.out.printf((String.format("%-10s", cur.getMax_rv_length()))); 
-			System.out.printf((String.format("%-10s", cur.isUtilities())));
-			System.out.printf((String.format("%-20s", "$" + campDAO.getCampgroundRate(cur.getCampground_id() * duration).setScale(2)))); 
+			System.out.printf((String.format("%-15s", siteDAO.stringTrueFalseSwitch(cur.isAccessible())))); 
+			System.out.printf((String.format("%-10s", siteDAO.stringRV(cur.getMax_rv_length())))); 
+			System.out.printf((String.format("%-10s", siteDAO.stringTrueFalseSwitch(cur.isUtilities()))));
+			System.out.printf((String.format("%-20s", "$" + campDAO.getCampgroundRate(cur.getCampground_id() * duration).setScale(2)))); // <--- Cost 
 			System.out.println();
 		}
 	}

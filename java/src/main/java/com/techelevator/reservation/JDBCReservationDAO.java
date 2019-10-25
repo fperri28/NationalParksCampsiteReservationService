@@ -29,6 +29,7 @@ public class JDBCReservationDAO implements ReservationDAO{
 								"(reservation_id, site_id, name, from_date, to_date, create_date) " + 
 								"VALUES (?, ?, ?, ?, ?, ?)";
 		
+		newRes.setReservation_id(getNextReservationId());
 		newRes.setName(name);
 		newRes.setFrom_date(fromDate);
 		newRes.setTo_date(toDate);

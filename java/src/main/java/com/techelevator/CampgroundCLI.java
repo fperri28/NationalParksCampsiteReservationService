@@ -300,7 +300,7 @@ public class CampgroundCLI {
 				System.out.printf(String.format("%-35s", cur.getName()));
 				System.out.printf(String.format("%-13s", strOpenMonth));
 				System.out.printf(String.format("%-13s", strCloseMonth));
-				System.out.printf(String.format("%-13s", "$" + cur.getDaily_fee().setScale(2)));
+				//System.out.printf(String.format("%-13s", "$" + cur.getDaily_fee().setScale(2)));
 				System.out.println();
 			}
 		} else {

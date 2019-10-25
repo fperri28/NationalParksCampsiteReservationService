@@ -6,6 +6,7 @@ import java.math.BigDecimal;
 import java.math.MathContext;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -203,17 +204,38 @@ public class CampgroundCLI {
 			return;
 		}
 		
-		String inputArrDate = getUserInput("\nWhat is the arrival date?__/__/____");
-		// NEED TO THROW ERROR MESSAGE IF INPUT IS NOT VALID
+		boolean success = false;
+		LocalDate arrDate = null;
+		do {
+			try {
+				String inputArrDate = getUserInput("What is the arrival date?__/__/____");
+				arrDate = LocalDate.parse(inputArrDate, formatter);
+				success = true;
+			} catch (DateTimeParseException e){
+				System.out.println("Please insert valid month 1-12");
+			}
+		}
+		while(!success);
 		
-		LocalDate arrDate = LocalDate.parse(inputArrDate, formatter);
-		
-		String inputDepartureDate = getUserInput("\nWhat is the departure date?__/__/____");
-		// NEED TO THROW ERROR MESSAGE IF INPUT IS NOT VALID
-		LocalDate depDate = LocalDate.parse(inputDepartureDate, formatter);
-		
+		LocalDate depDate = null;
+		success = false;
+		do {
+			try {
+				String inputDepartureDate = getUserInput("What is the departure date?__/__/____");
+				depDate = LocalDate.parse(inputDepartureDate, formatter);
+				success = true;
+			} catch (DateTimeParseException e){
+				System.out.println("Please insert valid month 1-12");
+			}
+		}
+		while(!success);		
+				
+				
+				
 		List<Site> availRes = siteDAO.getAvailableResBySite(userSelCampId, parkId, arrDate, depDate);
 		
+		
+				
 		if(availRes.size() > 0) { 
 			displayAvailRes(availRes);
 		} else {

@@ -9,7 +9,6 @@ import javax.sql.DataSource;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 
-import com.techelevator.park.Park;
 
 public class JDBCCampgroundDAO implements CampgroundDAO{
 
@@ -26,12 +25,12 @@ public class JDBCCampgroundDAO implements CampgroundDAO{
 	}
 
 	@Override
-	public Campground getCampgroundById(String aCampgroundId) {
+	public Campground getCampgroundById(int aCampgroundId) {
 
 		Campground theCampground = null;
 		String sqlSearchCampgroundsById = 	"SELECT * " + 
-											"FROM Campground " + 
-											"WHERE Campground_id = ?";
+											"FROM campground " + 
+											"WHERE campground_id = ?";
 		
 		SqlRowSet results = jdbcTemplate.queryForRowSet(sqlSearchCampgroundsById, aCampgroundId);		
 		while(results.next()) {	

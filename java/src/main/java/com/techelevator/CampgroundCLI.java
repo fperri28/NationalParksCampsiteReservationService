@@ -181,9 +181,19 @@ public class CampgroundCLI {
 	public void displayAvailRes() {
 		List<Reservation> res = resDAO.getReservationsByDate(1, LocalDate.of(2019, 10, 25), LocalDate.of(2019, 10, 30));
 		int siteID = res.get(0).getSite_id();
-		List<Site> site = siteDAO.getCampgroundBySite(siteID);
-		System.out.println(site.get(0).getCampground_id());
-	};
+		
+		List<Park> park = parkDAO.getParkByName(prevPark);
+		int parkID = park.get(0).getPark_id();
+		
+		List<Campground> camp = campDAO.getCampgroundByPark(parkID);
+		
+		for(Campground cur: camp) {
+			List<Site> sites = siteDAO.getSiteByCampground(cur.getCampground_id());
+			for(Site curr: sites) {
+				System.out.println(curr.getSite_id());
+			}
+		}
+	}
 
 	public static void endMethodProcessing() {
 		System.out.println("Thanks for visiting the National Park Campsite website. \"In all things of nature there is something of the marvelous.\" Aristotle");

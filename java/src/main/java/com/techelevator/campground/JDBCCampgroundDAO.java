@@ -96,17 +96,8 @@ public class JDBCCampgroundDAO implements CampgroundDAO{
 		
 	}
 	
-//	-------------------------------	HELPER METHODS	------------------------------
-	
-	
-	private List<Campground> open(String monthOpen, String monthClose) {
-		List<Campground>openForBusiness = new ArrayList<Campground>();
-		
-		return openForBusiness;
-	}
-	
 	public String stringMonth(String month) {
-
+		
 		switch(month) {
 		case "01":
 			return "January";
@@ -134,9 +125,19 @@ public class JDBCCampgroundDAO implements CampgroundDAO{
 			return "December";
 		default:
 			return "Invalid Month";
-		
+			
 		}
 	}
+	
+//	-------------------------------	HELPER METHODS	------------------------------
+	
+	
+	private List<Campground> open(String monthOpen, String monthClose) {
+		List<Campground>openForBusiness = new ArrayList<Campground>();
+		
+		return openForBusiness;
+	}
+	
 
 	private int getNextCampgroundId() {
 		SqlRowSet nextIdResult = jdbcTemplate.queryForRowSet("SELECT nextval('seq_campground_id')");

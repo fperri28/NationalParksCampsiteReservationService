@@ -266,7 +266,7 @@ public class CampgroundCLI {
 				"╚═════╝ ╚═╝  ╚═╝   ╚═╝   ╚═╝  ╚═╝    ╚═════╝ ╚═╝  ╚═╝╚══════╝╚══════╝                                        \n" + 
 				"                                                                                                             \n" + 
 				"\nWelcome to the National Parks Data Base." +
-				"\nPlease choose the number of the park that you would like to knoe more about.");
+				"\nPlease choose the number of the park that you would like to know more about.");
 	}
 	
 }

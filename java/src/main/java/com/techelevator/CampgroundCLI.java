@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.time.LocalDate;
+import java.time.Period;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
@@ -239,13 +240,12 @@ public class CampgroundCLI {
 				System.out.println("Please insert valid month 1-12");
 			}
 		}
-		while(!success);		
-				
-				
+		while(!success);			
+	 
+	    Period intervalPeriod = Period.between(arrDate, depDate);
+	    int stayDays = intervalPeriod.getDays();
 				
 		List<Site> availRes = siteDAO.getAvailableResBySite(userSelCampId, parkId, arrDate, depDate);
-		
-		
 				
 		if(availRes.size() > 0) { 
 			displayAvailRes(availRes);
@@ -306,7 +306,7 @@ public class CampgroundCLI {
 		System.out.printf(String.format("%-15s", "Accessible?"));
 		System.out.printf(String.format("%-10s", "RV Len."));
 		System.out.printf(String.format("%-10s", "Utility"));
-		System.out.printf(String.format("%-10s", "Fees"));
+		System.out.printf(String.format("%-10s", "Cost"));
 		System.out.println("\n============================================================");
 		
 

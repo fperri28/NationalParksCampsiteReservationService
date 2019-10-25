@@ -76,18 +76,20 @@ public class JDBCCampgroundDAO implements CampgroundDAO{
 	@Override
 	public BigDecimal getCampgroundRate(int campgroundId) {
 		List<Campground> campByPark = new ArrayList<Campground>();
-		
-		String sqlListAllCampgroundsQuery = "SELECT daily_fee "+
-				   							"FROM Campground " +
-				   							"WHERE park_id = ?";
+		BigDecimal dailyRate = null;
+		String sqlListAllCampgroundsQuery = "SELECT * "+
+				   							"FROM campground " +
+				   							"WHERE campground_id = ?";
 		SqlRowSet results = jdbcTemplate.queryForRowSet(sqlListAllCampgroundsQuery, campgroundId);
 
 		while(results.next()) {	
 			Campground dailyRates = mapRowToCampground(results);
 			campByPark.add(dailyRates);
 		}
-		
-		BigDecimal dailyRate = campByPark.get(0).getDaily_fee(); 
+		for(int i = 0; i < campByPark.size(); i++) {
+			dailyRate = campByPark.get(i).getDaily_fee(); 
+			
+		}
 		return dailyRate;
 	}
 
@@ -164,8 +166,8 @@ public class JDBCCampgroundDAO implements CampgroundDAO{
 	private Campground mapRowToCampground(SqlRowSet results) {
 		Campground theCampground = new Campground(); 
 		
-		theCampground.setCampground_id(results.getInt("Campground_id"));
-		theCampground.setPark_id(results.getInt("Park_id"));		
+		theCampground.setCampground_id(results.getInt("campground_id"));
+		theCampground.setPark_id(results.getInt("park_id"));		
 		theCampground.setName(results.getString("name"));
 		theCampground.setOpen_from_mm(results.getString("open_from_mm"));
 		theCampground.setOpen_to_mm(results.getString("open_to_mm"));

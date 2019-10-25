@@ -170,7 +170,7 @@ public class CampgroundCLI {
 	
 	private void campSiteSearch() {
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/d/yyyy");
-		Integer userSelCampId = Integer.parseInt(getUserInput("Which campground(enter 0 to cancel)?"));
+		Integer userSelCampId = Integer.parseInt(getUserInput("\n\nWhich campground(enter 0 to cancel)?"));
 		// NEED TO LIMIT SELECTIONS TO THE CAMPGROUND OPTIONS AND 0 TO EXIT
 		List<Campground> campgrounds = displayCampgroundsByPark(prevPark);
 		Set<Integer> idList = new HashSet<Integer> ();
@@ -184,7 +184,7 @@ public class CampgroundCLI {
 		if(userSelCampId == 0) {
 			return;
 		} else if(!idList.contains(userSelCampId)) {
-			System.out.println("INVALID SELECTION");
+			System.out.println("\nINVALID SELECTION");
 			return;
 		}
 		
@@ -224,10 +224,10 @@ public class CampgroundCLI {
 			displayAvailRes(availRes);
 		} else {
 			
-			System.out.println("No available sites for these dates.");
+			System.out.println("\nNo available sites for these dates.");
 			String inputAltDate = null;
 			do {
-				inputAltDate = getUserInput("Would you like to search an alternate dates? Y/N").toUpperCase();
+				inputAltDate = getUserInput("\nWould you like to search an alternate dates? Y/N").toUpperCase();
 			if (inputAltDate.contains("Y")) {
 				campSiteSearch();
 			} else if(inputAltDate.contains("N")){
@@ -238,6 +238,8 @@ public class CampgroundCLI {
 	}
 	
 	public void displayCampgrounds(List<Campground> campgroundsByPark)	{
+		
+		System.out.println();
 		System.out.printf(String.format("%-6s", "ID"));
 		System.out.printf(String.format("%-35s", "Campground Name")); 
 		System.out.printf(String.format("%-13s", "Open"));
@@ -260,7 +262,7 @@ public class CampgroundCLI {
 				System.out.printf(String.format("%-35s", cur.getName()));
 				System.out.printf(String.format("%-13s", strOpenMonth));
 				System.out.printf(String.format("%-13s", strCloseMonth));
-				System.out.printf(String.format("%-13s", "$" + cur.getDaily_fee()));
+				System.out.printf(String.format("%-13s", "$" + cur.getDaily_fee().setScale(2)));
 				System.out.println();
 			}
 		} else {
@@ -271,6 +273,7 @@ public class CampgroundCLI {
 	
 	public void displayAvailRes(List<Site> resSearch) {  
 		
+		System.out.println();
 		System.out.printf(String.format("%-8s", "Sites"));
 		System.out.printf(String.format("%-10s", "Max Occ."));
 		System.out.printf(String.format("%-15s", "Accessible?"));
@@ -282,12 +285,17 @@ public class CampgroundCLI {
 
 		for(Site cur: resSearch) {
 			
+//			int campId = cur.getCampground_id();
+//			int siteId = cur.getSite_id();
+//			Site dailyFee = siteDAO.getDailyFeeByCampgroundId(campId, siteId);
+//			BigDecimal dailyFee = new BigDecimal (campDAO.getCampgroundRate(cur.getCampground_id()));
+			
 			System.out.printf(String.format("%-8s", cur.getSite_id()));
 			System.out.printf(String.format("%-10s", cur.getMax_occupancy()));
 			System.out.printf((String.format("%-15s", cur.isAccessible()))); 
 			System.out.printf((String.format("%-10s", cur.getMax_rv_length()))); 
 			System.out.printf((String.format("%-10s", cur.isUtilities())));
-			System.out.printf((String.format("%-20s", siteDAO.getDailyFeeBySiteId(cur.getSite_id())))); // <--- Cost 
+			System.out.printf((String.format("%-20s", "$" + campDAO.getCampgroundRate(cur.getCampground_id()).setScale(2)))); // <--- Cost 
 			System.out.println();
 		}
 	}
@@ -298,6 +306,7 @@ public class CampgroundCLI {
 		
 		if(parksDetails.size() > 0) {
 			for(Park cur : parksDetails) {
+				System.out.println();
 				System.out.println(cur.getName() + " National Park");
 				System.out.println("\n================================\n");
 				System.out.printf(String.format( "%-17s", "Location: "));

@@ -197,6 +197,7 @@ public class CampgroundCLI {
 	   return campgroundsByPark;
 	}
 	
+	@SuppressWarnings("static-access")
 	private void campSiteSearch() {
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/d/yyyy");
 		Integer userSelCampId = Integer.parseInt(getUserInput("\n\nWhich campground(enter 0 to cancel)?"));
@@ -245,7 +246,7 @@ public class CampgroundCLI {
 		while(!success);			
 	 
 	    Period intervalPeriod = Period.between(arrDate, depDate);
-	    int stayDays = intervalPeriod.getDays();
+	    BigDecimal stayDays = new BigDecimal(intervalPeriod.getDays());
 				
 		List<Site> availRes = siteDAO.getAvailableResBySite(userSelCampId, parkId, arrDate, depDate);
 				
@@ -271,7 +272,12 @@ public class CampgroundCLI {
 		Integer userSelSite = Integer.parseInt(getUserInput("\n\nWhich site should be reserved (enter 0 to cancel)?"));
 		String userName = getUserInput("\nWhat name should the reservation be made under?");
 		Reservation newRes = resDAO.addReservations(userName, fromDate, toDate, userSelSite);
-		System.out.println(newRes.getReservation_id());
+		System.out.println("Congratulations " + newRes.getName() + ", you are booked.");
+		System.out.println("Your confirmation number/reservation id is : " + newRes.getReservation_id());
+		System.out.println("Your arrival date is: " + newRes.getFrom_date());
+		System.out.println("Your departure date is: " + newRes.getTo_date());
+		System.out.println("\nThank you for booking with the National Park Data Base, we look forward to hosting you!");
+		return;
 	}
 	
 	
@@ -300,7 +306,7 @@ public class CampgroundCLI {
 				System.out.printf(String.format("%-35s", cur.getName()));
 				System.out.printf(String.format("%-13s", strOpenMonth));
 				System.out.printf(String.format("%-13s", strCloseMonth));
-				//System.out.printf(String.format("%-13s", "$" + cur.getDaily_fee().setScale(2)));
+				System.out.printf(String.format("%-13s", "$" + cur.getDaily_fee().setScale(2)));
 				System.out.println();
 			}
 		} else {
@@ -309,7 +315,7 @@ public class CampgroundCLI {
 		
 	}
 	
-	public void displayAvailRes(List<Site> resSearch, int duration) {  
+	public void displayAvailRes(List<Site> resSearch, BigDecimal duration) {  
 		
 		System.out.println();
 		System.out.printf(String.format("%-8s", "Sites"));
@@ -328,7 +334,7 @@ public class CampgroundCLI {
 			System.out.printf((String.format("%-15s", siteDAO.stringTrueFalseSwitch(cur.isAccessible())))); 
 			System.out.printf((String.format("%-10s", siteDAO.stringRV(cur.getMax_rv_length())))); 
 			System.out.printf((String.format("%-10s", siteDAO.stringTrueFalseSwitch(cur.isUtilities()))));
-			System.out.printf((String.format("%-20s", "$" + campDAO.getCampgroundRate(cur.getCampground_id() * duration).setScale(2)))); // <--- Cost 
+			System.out.printf((String.format("%-20s", "$" + campDAO.getCampgroundRate(cur.getCampground_id()).multiply(duration).setScale(2)))); // <--- Cost 
 			System.out.println();
 		}
 	}

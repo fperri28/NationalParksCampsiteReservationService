@@ -7,8 +7,10 @@ import java.math.MathContext;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Scanner;
+import java.util.Set;
 
 import javax.sql.DataSource;
 
@@ -165,7 +167,6 @@ public class CampgroundCLI {
 		List<Park> parksDetails = parkDAO.getParkByName(parkName);
 		int parkId = parksDetails.get(0).getPark_id();
 		List<Campground> campgroundsByPark = campDAO.getCampgroundByPark(parkId); //<--- this is what i want for the viable search options
-		// <--- NOT SURE ABOUT THIS
 	   return campgroundsByPark;
 	}
 	
@@ -205,16 +206,22 @@ public class CampgroundCLI {
 	
 	private void campSiteSearch() {
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/d/yyyy");
-		int campgroundId = Integer.parseInt(getUserInput("Which campground(enter 0 to cancel)?"));
+		Integer userSelCampId = Integer.parseInt(getUserInput("Which campground(enter 0 to cancel)?"));
 		// NEED TO LIMIT SELECTIONS TO THE CAMPGROUND OPTIONS AND 0 TO EXIT
 		List<Campground> campgrounds = displayCampgroundsByPark(prevPark);
+		Set<Integer> idList = new HashSet<Integer> ();
 		
-		if(campgroundId == 0) {
-			return;
-		} else if(campgroundId > campgrounds.size()) {
-			System.out.println("INVALID SELECTION");
-			return;
-		} 
+		for(Campground cur: campgrounds) {
+			idList.add(cur.getCampground_id());
+		}
+		 
+		
+		 if(userSelCampId == 0) {
+			 return;
+		 } else if(!idList.contains(userSelCampId)) {
+			 System.out.println("INVALID SELECTION");
+			 return;
+		 }
 		
 		String inputArrDate = getUserInput("What is the arrival date?__/__/____");
 		// NEED TO THROW ERROR MESSAGE IF INPUT IS NOT VALID
@@ -224,7 +231,7 @@ public class CampgroundCLI {
 		// NEED TO THROW ERROR MESSAGE IF INPUT IS NOT VALID
 		LocalDate depDate = LocalDate.parse(inputDepartureDate, formatter);
 		
-		List<Reservation> reservedSites = resDAO.getReservationsByDate(campgroundId, arrDate, depDate);
+		List<Reservation> reservedSites = resDAO.getReservationsByDate(userSelCampId, arrDate, depDate);
 		displayAvailRes(reservedSites);
 	}
 	
@@ -237,7 +244,6 @@ public class CampgroundCLI {
 	
 	
 	public void displayAvailRes(List<Reservation> resSearch) {  
-		
 		
 		List<Park> park = parkDAO.getParkByName(prevPark);
 		int parkID = park.get(0).getPark_id();

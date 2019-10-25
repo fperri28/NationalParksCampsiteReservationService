@@ -60,7 +60,8 @@ public class JDBCSiteDAO implements SiteDAO {
 		
 		String sqlListAllSitesQuery = "SELECT * "+
 				   					  "FROM site " +
-				   					  "WHERE campground_id = ?";
+				   					  "WHERE campground_id = ? " +
+				   					  "LIMIT 5";
 		SqlRowSet results = jdbcTemplate.queryForRowSet(sqlListAllSitesQuery, campgroundId);
 
 		while(results.next()) {	

@@ -9,6 +9,8 @@ import javax.sql.DataSource;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 
+import com.techelevator.park.Park;
+
 
 public class JDBCReservationDAO implements ReservationDAO{
 
@@ -120,8 +122,16 @@ GROUP BY site.campground_id, reservation.reservation_id, site.site_id
 	
 	@Override
 	public Reservation getReservationById(int aReservationId) {
-		// TODO Auto-generated method stub
-		return null;
+		Reservation theReservation = null;
+		String sqlSearchReservationsById = 	"SELECT * " + 
+											"FROM reservation " + 
+											"WHERE reservation_id = ? ";
+		
+		SqlRowSet results = jdbcTemplate.queryForRowSet(sqlSearchReservationsById, aReservationId);		
+		while(results.next()) {	
+			theReservation = mapRowToReservation(results);
+		}
+		return theReservation;
 	}
 
 	@Override

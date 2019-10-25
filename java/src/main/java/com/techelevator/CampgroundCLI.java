@@ -161,26 +161,22 @@ public class CampgroundCLI {
 	}
 	
 	
-	
 	public List<Campground> displayCampgroundsByPark(String parkName) {
 		List<Park> parksDetails = parkDAO.getParkByName(parkName);
 		int parkId = parksDetails.get(0).getPark_id();
 		List<Campground> campgroundsByPark = campDAO.getCampgroundByPark(parkId); //<--- this is what i want for the viable search options
 		// <--- NOT SURE ABOUT THIS
 	   return campgroundsByPark;
-
-
-
 	}
 	
 	public void displayCampgrounds(List<Campground> campgroundsByPark)	{
-		
+		System.out.printf(String.format("%-6s", "ID"));
 		System.out.printf(String.format("%-35s", "Campground Name")); 
 		System.out.printf(String.format("%-13s", "Open"));
 		System.out.printf(String.format("%-13s", "Close"));
 		System.out.printf(String.format("%-13s", "Daily Fee"));
 		System.out.println();
-		System.out.println("==========================================================================");
+		System.out.println("============================================================================");
 
 
 		if(campgroundsByPark.size() > 0) {
@@ -193,7 +189,7 @@ public class CampgroundCLI {
 				String closeMonth = cur.getOpen_to_mm();
 				String strCloseMonth = campDAO.stringMonth(closeMonth);				
 				
-//				System.out.printf(String.format("%-4s", cur.getCampground_id()));
+				System.out.printf(String.format("%-6s", cur.getCampground_id()));
 				System.out.printf(String.format("%-35s", cur.getName()));
 				System.out.printf(String.format("%-13s", strOpenMonth));
 				System.out.printf(String.format("%-13s", strCloseMonth));
@@ -259,14 +255,16 @@ public class CampgroundCLI {
 		}
 		
 		System.out.printf(String.format("%-8s", "Sites"));
-		System.out.printf(String.format("%-14s", "Max Occ."));
-		System.out.println("Fees");
-		System.out.println();
+		System.out.printf(String.format("%-15s", "Max Occ."));
+		System.out.printf(String.format("%-20s", "Fees"));
+		System.out.println("\n================================");
 		
 		for(int i = 0; i < sites.size(); i++) {
 			for(int j = 0; j < resSearch.size(); j++) {
 				if(sitesByPark.get(i) != resSearch.get(j).getSite_id()) {
-					System.out.println(sitesByPark.get(i) + " " + sites.get(i).getMax_occupancy() + " $" + dailyFee );
+					System.out.printf(String.format("%-8s", sitesByPark.get(i)));
+					System.out.printf(String.format("%-14s", sites.get(i).getMax_occupancy()));
+					System.out.printf((String.format("%-20s", " $" + dailyFee)));
 					System.out.println();
 				}
 			}

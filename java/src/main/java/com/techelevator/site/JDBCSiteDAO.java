@@ -103,6 +103,28 @@ public class JDBCSiteDAO implements SiteDAO {
 	}
 	
 	@Override
+	public List<Site> getDailyFeeBySiteId(int siteId) {
+		List<Site> dailyFeeBySiteId = new ArrayList<Site>();
+		
+		String sqlListAllSitesQuery = 	"SELECT daily_fee, site_id " + 
+										"FROM campground " + 
+										"LEFT JOIN site " + 
+										"ON campground.campground_id = site.campground_id " + 
+										"WHERE campground.campground_id = ? " + 
+										"ORDER BY site.site_id " 
+										;
+		
+		SqlRowSet results = jdbcTemplate.queryForRowSet(sqlListAllSitesQuery, siteId);
+
+		while(results.next()) {	
+			Site aSite = mapRowToSite(results);
+			dailyFeeBySiteId.add(aSite);
+		}
+		
+		return dailyFeeBySiteId;
+	}
+	
+	@Override
 	public List<Site> getCampgroundBySite(int siteId) {
 		List<Site> campgroundBySite = new ArrayList<Site>();
 		
@@ -155,5 +177,6 @@ public class JDBCSiteDAO implements SiteDAO {
 		
 		return theSite;
 	}
+
 	
 }

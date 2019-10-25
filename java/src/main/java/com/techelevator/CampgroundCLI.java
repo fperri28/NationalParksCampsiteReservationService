@@ -34,7 +34,7 @@ import com.techelevator.site.SiteDAO;
 
 public class CampgroundCLI {
 	
-///////////////////////////////////////////MENU CLI ////////////////////////////////////////////////////////////////
+/////////////////////////////////////////// MENU CLI ////////////////////////////////////////////////////////////////
 
 
 
@@ -51,7 +51,8 @@ public class CampgroundCLI {
 
 	
 	
-///////////////////////////////////////	Variable//////////////////////////////////////////////////
+///////////////////////////////////////	Variable //////////////////////////////////////////////////
+	
 	private Menu campgroundMenu;
 	private ParkDAO parkDAO;
 	private CampgroundDAO campDAO;
@@ -324,11 +325,9 @@ public class CampgroundCLI {
 
 	public void displayParkDetails(String choice) {
 		List<Park> parksDetails = parkDAO.getParkByName(choice);
-		System.out.println();
 		
 		if(parksDetails.size() > 0) {
 			for(Park cur : parksDetails) {
-				System.out.println();
 				System.out.println(cur.getName() + " National Park");
 				System.out.println("\n================================\n");
 				System.out.printf(String.format( "%-17s", "Location: "));

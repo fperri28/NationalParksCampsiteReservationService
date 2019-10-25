@@ -20,7 +20,7 @@ public interface CampgroundDAO {
 
 	public BigDecimal getCampgroundRate(Campground aCampground);//	Return the rate for a campground
 	
-	
+	public String stringMonth(String month);
 	//TODO Add a read method for getCampgroundByOpenDate?
 	
 	

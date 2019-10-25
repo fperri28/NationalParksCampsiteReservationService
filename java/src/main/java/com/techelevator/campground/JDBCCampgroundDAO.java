@@ -105,7 +105,7 @@ public class JDBCCampgroundDAO implements CampgroundDAO{
 		return openForBusiness;
 	}
 	
-	private String stringMonth(String month) {
+	public String stringMonth(String month) {
 
 		switch(month) {
 		case "01":

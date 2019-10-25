@@ -2,6 +2,8 @@ package com.techelevator;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.MathContext;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +35,7 @@ public class CampgroundCLI {
 
 	private static final String VIEW_CAMPGROUNDS = "View Campgrounds";
 	private static final String SEARCH_RESERVATIONS = "Search for Reservations";
-	private static final String RETURN_TO_MAIN_MENU = "Return to Previous Screen";
+	private static final String RETURN_TO_MAIN_MENU = "Return to Parks";
 	private static final String[] SUB_MENU_OPTIONS = { VIEW_CAMPGROUNDS, SEARCH_RESERVATIONS,
 														RETURN_TO_MAIN_MENU };
 
@@ -80,6 +82,7 @@ public class CampgroundCLI {
 	 ***************************************************************************************************************************/
 
 	public void run() {
+		displayApplicationBanner();
 		String choice = (String) campgroundMenu.getChoiceFromOptions(displayParks()); 
 		while(true) {		
 				Object lastChoice = displayParks()[displayParks().length-1];
@@ -103,7 +106,7 @@ public class CampgroundCLI {
 
 			String choice = (String) campgroundMenu.getChoiceFromOptions(SUB_MENU_OPTIONS); 
 			if(choice.equals(VIEW_CAMPGROUNDS)){
-				System.out.println("Park Campgrounds");
+				System.out.println("\n" + park + " National Park Campgrounds\n");
 				displayCampgrounds(park);
 				Reservations();
 			} else if(choice.equals(SEARCH_RESERVATIONS)) {
@@ -138,7 +141,7 @@ public class CampgroundCLI {
 		List<Park> parks = parkDAO.getAllParks();
 		List<String> parkNames = new ArrayList<String>();
 		
-		System.out.println();
+		System.out.println("\n");
 		
 		if(parks.size() > 0) {
 			for(Park cur : parks) {
@@ -156,20 +159,30 @@ public class CampgroundCLI {
 		int parkId = parksDetails.get(0).getPark_id();
 		
 		List<Campground> campgroundsByPark = campDAO.getCampgroundByPark(parkId);
-		System.out.printf(String.format("%-4s", ""));
-		System.out.printf(String.format("%-15s", "Name")); 
-		System.out.printf(String.format("%-20s", "Open"));
-		System.out.printf(String.format("%-25s", "Close"));
-		System.out.printf(String.format("%-30s", "Daily Fee"));
+//		System.out.printf(String.format("%-4s", ""));
+		System.out.printf(String.format("%-35s", "Campground Name")); 
+		System.out.printf(String.format("%-13s", "Open"));
+		System.out.printf(String.format("%-13s", "Close"));
+		System.out.printf(String.format("%-13s", "Daily Fee"));
 		System.out.println();
+		System.out.println("==========================================================================");
+
 
 		if(campgroundsByPark.size() > 0) {
+
 			for(Campground cur : campgroundsByPark) {
-				System.out.printf(String.format("%-4s", cur.getCampground_id()));
-				System.out.printf(String.format("%-15s", cur.getName()));
-				System.out.printf(String.format( "%-20s", cur.getOpen_from_mm()));
-				System.out.printf(String.format( "%-25s", cur.getOpen_to_mm()));
-				System.out.printf(String.format( "%-30s", cur.getDaily_fee()));
+				
+				String openMonth = cur.getOpen_from_mm();
+				String strOpenMonth = campDAO.stringMonth(openMonth);
+				
+				String closeMonth = cur.getOpen_to_mm();
+				String strCloseMonth = campDAO.stringMonth(closeMonth);				
+				
+//				System.out.printf(String.format("%-4s", cur.getCampground_id()));
+				System.out.printf(String.format("%-35s", cur.getName()));
+				System.out.printf(String.format("%-13s", strOpenMonth));
+				System.out.printf(String.format("%-13s", strCloseMonth));
+				System.out.printf(String.format("%-13s", "$" + cur.getDaily_fee()));
 				System.out.println();
 			}
 		} else {
@@ -205,11 +218,6 @@ public class CampgroundCLI {
 		
 	}
 
-	public static void endMethodProcessing() {
-		System.out.println("Thanks for visiting the National Park Campsite website. \"In all things of nature there is something of the marvelous.\" Aristotle");
-		System.exit(0);
-	}
-	
 	public void displayParkDetails(String choice) {
 		List<Park> parksDetails = parkDAO.getParkByName(choice);
 		System.out.println();
@@ -217,6 +225,7 @@ public class CampgroundCLI {
 		if(parksDetails.size() > 0) {
 			for(Park cur : parksDetails) {
 				System.out.println(cur.getName() + " National Park");
+				System.out.println("\n================================\n");
 				System.out.printf(String.format( "%-17s", "Location: "));
 				System.out.println(cur.getLocation());
 				System.out.printf(String.format("%-17s", "Established: "));
@@ -225,13 +234,39 @@ public class CampgroundCLI {
 				System.out.println(cur.getArea() + " sq km");
 				System.out.printf(String.format("%-17s", "Annual Visitors: " ));
 				System.out.println(cur.getVisitors());
-				System.out.println();
+				System.out.println("\n================================\n");
 				System.out.println(cur.getDescription());
 				
 			}
 		} else {
 			System.out.println("\n*** No results ***");
 		}
+	}
+
+	public static void endMethodProcessing() {
+		System.out.println("Thanks for visiting the National Park Campsite website." +
+				"\n \"In all things of nature there is something of the marvelous.\" Aristotle");
+		System.exit(0);
+	}
+	
+	private void displayApplicationBanner() {
+		System.out.println("\n" + 
+				"███╗   ██╗ █████╗ ████████╗██╗ ██████╗ ███╗   ██╗ █████╗ ██╗         ██████╗  █████╗ ██████╗ ██╗  ██╗███████╗\n" + 
+				"████╗  ██║██╔══██╗╚══██╔══╝██║██╔═══██╗████╗  ██║██╔══██╗██║         ██╔══██╗██╔══██╗██╔══██╗██║ ██╔╝██╔════╝\n" + 
+				"██╔██╗ ██║███████║   ██║   ██║██║   ██║██╔██╗ ██║███████║██║         ██████╔╝███████║██████╔╝█████╔╝ ███████╗\n" + 
+				"██║╚██╗██║██╔══██║   ██║   ██║██║   ██║██║╚██╗██║██╔══██║██║         ██╔═══╝ ██╔══██║██╔══██╗██╔═██╗ ╚════██║\n" + 
+				"██║ ╚████║██║  ██║   ██║   ██║╚██████╔╝██║ ╚████║██║  ██║███████╗    ██║     ██║  ██║██║  ██║██║  ██╗███████║\n" + 
+				"╚═╝  ╚═══╝╚═╝  ╚═╝   ╚═╝   ╚═╝ ╚═════╝ ╚═╝  ╚═══╝╚═╝  ╚═╝╚══════╝    ╚═╝     ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝╚══════╝\n" + 
+				"                                                                                                             \n" + 
+				"██████╗  █████╗ ████████╗ █████╗     ██████╗  █████╗ ███████╗███████╗                                        \n" + 
+				"██╔══██╗██╔══██╗╚══██╔══╝██╔══██╗    ██╔══██╗██╔══██╗██╔════╝██╔════╝                                        \n" + 
+				"██║  ██║███████║   ██║   ███████║    ██████╔╝███████║███████╗█████╗                                          \n" + 
+				"██║  ██║██╔══██║   ██║   ██╔══██║    ██╔══██╗██╔══██║╚════██║██╔══╝                                          \n" + 
+				"██████╔╝██║  ██║   ██║   ██║  ██║    ██████╔╝██║  ██║███████║███████╗                                        \n" + 
+				"╚═════╝ ╚═╝  ╚═╝   ╚═╝   ╚═╝  ╚═╝    ╚═════╝ ╚═╝  ╚═╝╚══════╝╚══════╝                                        \n" + 
+				"                                                                                                             \n" + 
+				"\nWelcome to the National Parks Data Base." +
+				"\nPlease choose the number of the park that you would like to knoe more about.");
 	}
 	
 }

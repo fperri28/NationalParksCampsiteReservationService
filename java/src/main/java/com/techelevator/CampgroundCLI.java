@@ -219,6 +219,22 @@ public class CampgroundCLI {
 			return;
 		}
 		
+		/*
+		 * Date TO DO
+		 * Past Dates
+		 * Day error message
+		 * arrival less departure date
+		 * Open Season
+		 * 
+		 * 
+		 * 
+		 */
+		
+		
+		
+		
+		
+		
 		boolean success = false;
 		LocalDate arrDate = null;
 		do {

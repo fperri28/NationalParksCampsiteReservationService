@@ -42,8 +42,7 @@ public class JDBCReservationDAO implements ReservationDAO{
 							newRes.getName(), 
 							newRes.getFrom_date(), 
 							newRes.getTo_date(),
-							newRes.getCreate_date()
-											);
+							newRes.getCreate_date());
 
 		return newRes;
 	}
@@ -63,15 +62,12 @@ public class JDBCReservationDAO implements ReservationDAO{
 		}
 		return allReservations;
 	}
-	
-
-	
 
 	@Override
 	public List<Reservation> getReservationsByDate(int siteId, LocalDate fromDate, LocalDate toDate) {
 		List<Reservation> reservationbySite = new ArrayList<Reservation>();
 		
-		String sqlListAllEmpQuery = 	"  SELECT * " +
+		String sqlListAllResQuery = 	"  SELECT * " +
 										" FROM reservation " +
 										" INNER JOIN site ON reservation.site_id = site.site_id " +
 										" WHERE from_date  BETWEEN ? AND ? " +
@@ -79,7 +75,7 @@ public class JDBCReservationDAO implements ReservationDAO{
 										" AND campground_id = ? " +
 										" GROUP BY site.campground_id, reservation.reservation_id, site.site_id ";
 		
-		SqlRowSet results = jdbcTemplate.queryForRowSet(sqlListAllEmpQuery, fromDate, toDate, fromDate, toDate, siteId);
+		SqlRowSet results = jdbcTemplate.queryForRowSet(sqlListAllResQuery, fromDate, toDate, fromDate, toDate, siteId);
 
 		while(results.next()) {	
 			Reservation aReservation = mapRowToReservation(results);
@@ -89,6 +85,30 @@ public class JDBCReservationDAO implements ReservationDAO{
 		return reservationbySite;
 	}
 
+	@Override
+	public List<Reservation> getReservationsForNext30(LocalDate fromDate, LocalDate toDate, int parkId) {
+		List<Reservation> reservationForNext30 = new ArrayList<Reservation>();
+		
+		String sqlListAllEResFor30DaysQuery =	"SELECT * " + 
+												"FROM reservation " + 
+												"INNER JOIN site ON reservation.site_id = site.site_id " + 
+												"INNER JOIN campground ON site.campground_id = campground.campground_id " + 
+												"INNER JOIN park ON campground.park_id = park.park_id " + 
+												"WHERE from_date BETWEEN ? AND ? " + 
+												"AND park.park_id = ? " + 
+												"ORDER BY from_date ASC ";
+		
+		SqlRowSet results = jdbcTemplate.queryForRowSet(sqlListAllEResFor30DaysQuery, fromDate, toDate, parkId);
+
+		while(results.next()) {	
+			Reservation aReservation = mapRowToReservation(results);
+			reservationForNext30.add(aReservation);
+		}
+		
+		return reservationForNext30;
+	}
+	
+	
 	@Override
 	public List<Reservation> getReservationsBySite(int siteId, int campId) {
 		List<Reservation> reservationbySite = new ArrayList<Reservation>();

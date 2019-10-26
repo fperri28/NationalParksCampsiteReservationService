@@ -38,16 +38,19 @@ public class CampgroundCLI {
 
 
 
-	private static final String VIEW_CAMPGROUNDS = "View Campgrounds";
-	private static final String SEARCH_RESERVATIONS = "Search for Reservations";
-	private static final String RETURN_TO_MAIN_MENU = "Return to Parks";
-	private static final String[] SUB_MENU_OPTIONS = { VIEW_CAMPGROUNDS, SEARCH_RESERVATIONS,
-														RETURN_TO_MAIN_MENU };
+	private static final String VIEW_CAMPGROUNDS 					= "View Campgrounds";
+	private static final String SEARCH_RESERVATIONS 				= "Search for Reservations";
+	private static final String RETURN_TO_MAIN_MENU 				= "Return to Parks";
+	private static final String[] SUB_MENU_OPTIONS 					= { VIEW_CAMPGROUNDS, 
+																		SEARCH_RESERVATIONS,
+																		RETURN_TO_MAIN_MENU };
 
-	private static final String SEARCH_FOR_AVAILABLE_RESERVATIONS = "Search for Available Reservations";
-	private static final String	MENU_EXIT		= 					"Return to Previous Screen";
-	private static final String[] RESERVATION_MENU_OPTIONS = { SEARCH_FOR_AVAILABLE_RESERVATIONS, 
-															MENU_EXIT};
+	private static final String SEARCH_FOR_AVAILABLE_RESERVATIONS 	= "Search for Available Reservations";
+	private static final String SEARCH_FOR_BOOKED_RESERVATIONS 		= "View Booked Reservations";	
+	private static final String	MENU_EXIT							= "Return to Previous Screen";
+	private static final String[] RESERVATION_MENU_OPTIONS 			= { SEARCH_FOR_AVAILABLE_RESERVATIONS,
+																		SEARCH_FOR_BOOKED_RESERVATIONS,
+																		MENU_EXIT};
 
 	
 	
@@ -133,7 +136,10 @@ public class CampgroundCLI {
 
 		if(choice.equals(SEARCH_FOR_AVAILABLE_RESERVATIONS)){
 			campSiteSearch();
-		} else if(choice.equals(MENU_EXIT)) {
+		} else if(choice.equals(SEARCH_FOR_BOOKED_RESERVATIONS)) {
+			displayNext30DaysOfReservations();
+		}
+		else if(choice.equals(MENU_EXIT)) {
 			return;
 		}
 		
@@ -190,6 +196,11 @@ public class CampgroundCLI {
 	public void displayCampgroundsByPark() {
 		List<Campground> campgroundsByPark = campDAO.getCampgroundByPark(prevPark); 
 		displayCampgrounds(campgroundsByPark);
+	}
+	
+	public void displayNext30DaysOfReservations() {
+		List<Reservation> reservationsByPark = resDAO.getReservationsForNext30(LocalDate.now(), LocalDate.now().plusMonths(1), prevPark); 
+		displayNext30Res(reservationsByPark);
 	}
 	
 	private void campSiteSearch() {
@@ -277,8 +288,6 @@ public class CampgroundCLI {
 		return date;
 	}
 	
-	
-	
 	private void selectReservation(LocalDate fromDate, LocalDate toDate) {
 		Integer userSelSite = Integer.parseInt(getUserInput("\n\nWhich site should be reserved (enter 0 to cancel)?"));
 		
@@ -298,6 +307,34 @@ public class CampgroundCLI {
 		return;
 	}
 	
+	public void displayNext30Res(List<Reservation> reservationsByPark) {
+		System.out.println();
+		System.out.printf(String.format("%-15s", "Reservation ID"));
+		System.out.printf(String.format("%-15s", "Site ID")); 
+		System.out.printf(String.format("%-32s", "Name"));
+		System.out.printf(String.format("%-15s", "From Date"));
+		System.out.printf(String.format("%-15s", "To Date"));
+		System.out.printf(String.format("%-15s", "Date Created"));
+		System.out.println();
+		System.out.println("========================================================================================================");
+
+		if(reservationsByPark.size() > 0) {
+
+			for(Reservation res : reservationsByPark) {
+							
+				System.out.printf(String.format("%-15s", res.getReservation_id()));
+				System.out.printf(String.format("%-15s", res.getSite_id()));
+				System.out.printf(String.format("%-32s", res.getName()));
+				System.out.printf(String.format("%-15s", res.getFrom_date()));
+				System.out.printf(String.format("%-15s", res.getTo_date()));
+				System.out.printf(String.format("%-15s", res.getCreate_date()));
+				System.out.println();
+			}
+		} else {
+			System.out.println("\n*** No results ***");
+		}
+		System.out.println("\n");
+	}
 	
 	public void displayCampgrounds(List<Campground> campgroundsByPark)	{
 		
@@ -386,7 +423,6 @@ public class CampgroundCLI {
 				"\n \"In all things of nature there is something of the marvelous.\" Aristotle");
 		System.exit(0);
 	}
-	
 	
 	@SuppressWarnings("resource")
 	private String getUserInput(String prompt) {

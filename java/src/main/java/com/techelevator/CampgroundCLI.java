@@ -37,8 +37,6 @@ public class CampgroundCLI {
 	
 /////////////////////////////////////////// MENU CLI ////////////////////////////////////////////////////////////////
 
-
-
 	private static final String VIEW_CAMPGROUNDS 					= "View Campgrounds";
 	private static final String SEARCH_RESERVATIONS 				= "Search for Reservations";
 	private static final String RETURN_TO_MAIN_MENU 				= "Return to Parks";
@@ -52,16 +50,15 @@ public class CampgroundCLI {
 	private static final String[] RESERVATION_MENU_OPTIONS 			= { SEARCH_FOR_AVAILABLE_RESERVATIONS,
 																		SEARCH_FOR_BOOKED_RESERVATIONS,
 																		MENU_EXIT};
-
 	
+///////////////////////////////////////	Variables / Main / Constructor //////////////////////////////////////////////////
 	
-///////////////////////////////////////	Variable //////////////////////////////////////////////////
+	private Menu 			campgroundMenu;
+	private ParkDAO 		parkDAO;
+	private CampgroundDAO 	campDAO;
+	private ReservationDAO 	resDAO;
+	private SiteDAO 		siteDAO;
 	
-	private Menu campgroundMenu;
-	private ParkDAO parkDAO;
-	private CampgroundDAO campDAO;
-	private ReservationDAO resDAO;
-	private SiteDAO siteDAO;
 	public static void main(String[] args) {
 		CampgroundCLI application = new CampgroundCLI();
 		application.run();
@@ -79,10 +76,8 @@ public class CampgroundCLI {
 		parkDAO = new JDBCParkDAO(dataSource);
 		campDAO = new JDBCCampgroundDAO(dataSource);
 		resDAO = new JDBCReservationDAO(dataSource);
-		siteDAO = new JDBCSiteDAO(dataSource);
-		
+		siteDAO = new JDBCSiteDAO(dataSource);	
 	}
-
 
 	/**************************************************************************************************************************
 	 * CampgroundCLI main processing loop
@@ -145,16 +140,13 @@ public class CampgroundCLI {
 		
 	}
 	
-
 	/********************************************************************************************************
 	 * Methods used to perform processing
 	 ********************************************************************************************************/
-
-	
 	
 	public void reservations() {
-		Integer userReservationId = Integer.parseInt(getUserInput(	"\n\nPlease Enter Your Reservation ID: " +
-			"(enter 0 to cancel)"));
+		Integer userReservationId = Integer.parseInt(getUserInput("\n\nPlease Enter Your Reservation ID: " +
+																  "(enter 0 to cancel)"));
 	
 		Reservation reservation = resDAO.getReservationById(userReservationId);
 	
@@ -163,10 +155,17 @@ public class CampgroundCLI {
 		} else if (reservation != null) {
 			System.out.println();
 			System.out.println("Congratulations " + reservation.getName() + ", you are booked.");
-			System.out.println("Your reservation id is : " + reservation.getReservation_id());
-			System.out.println("Your site id is : " + reservation.getSite_id());
-			System.out.println("Your arrival date is: " + reservation.getFrom_date());
-			System.out.println("Your departure date is: " + reservation.getTo_date());
+			System.out.println();
+			System.out.println("Your reservation id is: " );			
+			System.out.println(reservation.getReservation_id());
+			System.out.println("Your site id is: " );
+			System.out.println(reservation.getSite_id());
+			System.out.println("Your arrival date is: ");
+			System.out.println(reservation.getFrom_date());
+			System.out.println("Your departure date is: ");
+			System.out.println(reservation.getTo_date());
+			System.out.println();
+
 			return;
 		} else {
 			System.out.println("Invalid Reservation ID, please try again.");
@@ -217,7 +216,7 @@ public class CampgroundCLI {
 			idList.add(cur.getCampground_id());
 		}
 		
-		//User campground validator
+		// User campground validator
 		if(userSelCampId == 0) {
 			return;
 		} else if(!idList.contains(userSelCampId)) {
@@ -225,7 +224,7 @@ public class CampgroundCLI {
 			return;
 		}
 		
-		//Get user arrival date
+		// Get user arrival date
 		boolean success = false;
 		
 		do {
@@ -251,15 +250,12 @@ public class CampgroundCLI {
 		}
 		while(!success);			
 	 
-		
-		
+		// Retrieve stay length and month values
 	    Period intervalPeriod = Period.between(arrDate, depDate);
 	    BigDecimal stayDays = new BigDecimal(intervalPeriod.getDays());
 		
 	    String arrMonth = String.valueOf(arrDate.getMonthValue());
 	    String depMonth = String.valueOf(depDate.getMonthValue());
-	    
-	    
 	    
 	    // Validate dates 
 	    if(arrDate.isBefore(depDate)) {
@@ -288,8 +284,6 @@ public class CampgroundCLI {
 		}
 	}
 	
-	
-	
 	private LocalDate getUserInputDate(String message) {
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/d/yyyy");
 		String inputDate = getUserInput(message);
@@ -304,7 +298,7 @@ public class CampgroundCLI {
 				inputDate = getUserInput(message);
 				date = LocalDate.parse(inputDate, formatter);
 			}
-		}while(!validDate);
+		} while(!validDate);
 		return date;
 	}
 	
@@ -320,9 +314,12 @@ public class CampgroundCLI {
 		Reservation newRes = resDAO.addReservations(userName, fromDate, toDate, userSelSite);
 		
 		System.out.println("Congratulations " + newRes.getName() + ", you are booked.");
-		System.out.println("Your confirmation number/reservation id is : " + newRes.getReservation_id());
-		System.out.println("Your arrival date is: " + newRes.getFrom_date());
-		System.out.println("Your departure date is: " + newRes.getTo_date());
+		System.out.println("Your confirmation number/reservation id is: ");
+		System.out.println(newRes.getReservation_id());
+		System.out.println("Your arrival date is: ");
+		System.out.println(newRes.getFrom_date());
+		System.out.println("Your departure date is: ");
+		System.out.println(newRes.getTo_date());
 		System.out.println("\nThank you for booking with the National Park Data Base, we look forward to hosting you!");
 		
 		return;
@@ -372,6 +369,7 @@ public class CampgroundCLI {
 
 			for(Campground cur : campgroundsByPark) {
 				
+				// Convert months from number Strings to word Strings (i.e: 01 to January, 02 to February, etc)
 				String openMonth = cur.getOpen_from_mm();
 				String strOpenMonth = campDAO.stringMonth(openMonth);
 				
@@ -402,7 +400,6 @@ public class CampgroundCLI {
 		System.out.printf(String.format("%-10s", "Cost"));
 		System.out.println("\n============================================================");
 		
-
 		for(Site cur: resSearch) {
 			
 			System.out.printf(String.format("%-8s", cur.getSite_id()));
@@ -419,7 +416,9 @@ public class CampgroundCLI {
 		List<Park> parksDetails = parkDAO.getParksByName(choice);
 		
 		if(parksDetails.size() > 0) {
+			
 			for(Park cur : parksDetails) {
+				
 				System.out.println(cur.getName() + " National Park");
 				System.out.println("\n================================\n");
 				System.out.printf(String.format( "%-17s", "Location: "));

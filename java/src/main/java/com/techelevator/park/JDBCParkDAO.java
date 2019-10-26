@@ -18,15 +18,8 @@ public class JDBCParkDAO implements ParkDAO{
 		this.jdbcTemplate = new JdbcTemplate(dataSource);
 	}
 	
-//	Do we even need this? - Check with Frank before finishing
 	@Override
 	public Park addLocation(Park newPark) {
-//		String sqlAddNewPark = 	"INSERT INTO park" + 
-//								"(park_id, name, location, establish_date, area, visitors, description) " + 
-//								"VALUES (?, ?, ?, ?, ?, ?, ?)";
-//		newPark.setPark_id(getNextParkId()); 
-//		
-//		jdbcTemplate.update(sqlAddNewPark, newPark.getPark_id(), newPark.getName());
 
 		return newPark;
 	}
@@ -117,15 +110,6 @@ public class JDBCParkDAO implements ParkDAO{
 	}
 	
 //	-------------------------------	HELPER METHODS	---------------------------------
-
-	private int getNextParkId() {
-		SqlRowSet nextIdResult = jdbcTemplate.queryForRowSet("SELECT nextval('seq_park_id')");
-		if (nextIdResult.next()) {
-			return nextIdResult.getInt(1);
-		} else {
-			throw new RuntimeException("Something went wrong while getting an id for the new park");
-		}
-	}
 	
 	private Park mapRowToPark(SqlRowSet results) {
 		Park thePark = new Park(); 

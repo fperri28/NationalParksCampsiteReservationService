@@ -167,7 +167,7 @@ public class JDBCCampgroundDAO implements CampgroundDAO{
 	
 
 	private int getNextCampgroundId() {
-		SqlRowSet nextIdResult = jdbcTemplate.queryForRowSet("SELECT nextval('seq_campground_id')");
+		SqlRowSet nextIdResult = jdbcTemplate.queryForRowSet("SELECT nextval('campground_campground_id_seq')");
 		if (nextIdResult.next()) {
 			return nextIdResult.getInt(1);
 		} else {

@@ -205,15 +205,20 @@ public class CampgroundCLI {
 	}
 	
 	private void campSiteSearch() {
-		Integer userSelCampId = Integer.parseInt(getUserInput("\n\nWhich campground(enter 0 to cancel)?"));
 
 		List<Campground> campgrounds = campDAO.getCampgroundByPark(prevPark);
 		Set<Integer> idList = new HashSet<Integer> ();
+		LocalDate depDate = null;
+		LocalDate arrDate = null;
+		List<Site> availRes = null;
 		
+		Integer userSelCampId = Integer.parseInt(getUserInput("\n\nWhich campground(enter 0 to cancel)?"));
+
 		for(Campground cur: campgrounds) {
 			idList.add(cur.getCampground_id());
 		}
 		
+		//User campground validator
 		if(userSelCampId == 0) {
 			return;
 		} else if(!idList.contains(userSelCampId)) {
@@ -221,8 +226,8 @@ public class CampgroundCLI {
 			return;
 		}
 		
+		//Get user arrival date
 		boolean success = false;
-		LocalDate arrDate = null;
 		
 		do {
 			try {
@@ -234,13 +239,12 @@ public class CampgroundCLI {
 		}
 		while(!success);
 		
-		LocalDate depDate = null;
+		// Get user departure date
 		success = false;
 		
 		do {
 			try {
 				depDate = getUserInputDate("What is the departure date?__/__/____");
-				// compare departure to arrival 
 				success = true;
 			} catch (DateTimeParseException e){
 				System.out.println("Please insert valid date");
@@ -256,7 +260,9 @@ public class CampgroundCLI {
 	    String arrMonth = String.valueOf(arrDate.getMonthValue());
 	    String depMonth = String.valueOf(depDate.getMonthValue());
 	    
-	    List<Site> availRes = null;
+	    
+	    
+	    // Validate dates 
 	    if(arrDate.isBefore(depDate)) {
 	    	availRes = siteDAO.getAvailableResBySite(userSelCampId, prevPark, arrDate, depDate, arrMonth, depMonth);
 	    } else {
@@ -264,8 +270,8 @@ public class CampgroundCLI {
 	    	return;
 	    }
 	    
-	    
-		if(availRes.size() > 0 && availRes != null) { 
+	    // Validate query results
+		if(availRes.size() > 0) { 
 			displayAvailRes(availRes, stayDays);
 			selectReservation(arrDate, depDate);
 		} else {
@@ -405,7 +411,7 @@ public class CampgroundCLI {
 			System.out.printf((String.format("%-15s", siteDAO.stringTrueFalseSwitch(cur.isAccessible())))); 
 			System.out.printf((String.format("%-10s", siteDAO.stringRV(cur.getMax_rv_length())))); 
 			System.out.printf((String.format("%-10s", siteDAO.stringTrueFalseSwitch(cur.isUtilities()))));
-			System.out.printf((String.format("%-20s", "$" + campDAO.getCampgroundRate(cur.getCampground_id()).multiply(duration).setScale(2)))); // <--- Cost 
+			System.out.printf((String.format("%-20s", "$" + campDAO.getCampgroundRate(cur.getCampground_id()).multiply(duration).setScale(2))));
 			System.out.println();
 		}
 	}

@@ -44,12 +44,14 @@ public class CampgroundCLI {
 																		SEARCH_RESERVATIONS,
 																		RETURN_TO_MAIN_MENU };
 
-	private static final String SEARCH_FOR_AVAILABLE_RESERVATIONS 	= "Search for Available Reservations";
-	private static final String SEARCH_FOR_BOOKED_RESERVATIONS 		= "View Booked Reservations";	
-	private static final String	MENU_EXIT							= "Return to Previous Screen";
-	private static final String[] RESERVATION_MENU_OPTIONS 			= { SEARCH_FOR_AVAILABLE_RESERVATIONS,
-																		SEARCH_FOR_BOOKED_RESERVATIONS,
-																		MENU_EXIT};
+	private static final String SEARCH_FOR_AVAILABLE_RESERVATIONS 			= "Search for Available Reservations";
+	private static final String SEARCH_FOR_AVAILABLE_RESERVATIONS_BY_PARK 	= "Search for Available Reservations in the entire Park";	
+	private static final String SEARCH_FOR_BOOKED_RESERVATIONS 				= "View Booked Reservations";	
+	private static final String	MENU_EXIT									= "Return to Previous Screen";
+	private static final String[] RESERVATION_MENU_OPTIONS 					= { SEARCH_FOR_AVAILABLE_RESERVATIONS,
+																				SEARCH_FOR_BOOKED_RESERVATIONS,
+// BONUS - Under Construction													SEARCH_FOR_AVAILABLE_RESERVATIONS_BY_PARK,
+																				MENU_EXIT};
 	
 ///////////////////////////////////////	Variables / Main / Constructor //////////////////////////////////////////////////
 	
@@ -131,7 +133,13 @@ public class CampgroundCLI {
 
 		if(choice.equals(SEARCH_FOR_AVAILABLE_RESERVATIONS)){
 			campSiteSearch(prevPark);
-		} else if(choice.equals(SEARCH_FOR_BOOKED_RESERVATIONS)) {
+		}
+//		
+//		BONUS under construction		
+//		else if(choice.equals(SEARCH_FOR_AVAILABLE_RESERVATIONS_BY_PARK)) {
+//			
+//		}
+		else if(choice.equals(SEARCH_FOR_BOOKED_RESERVATIONS)) {
 			displayNext30DaysOfReservations(prevPark);
 		}
 		else if(choice.equals(MENU_EXIT)) {
@@ -201,6 +209,12 @@ public class CampgroundCLI {
 		List<Reservation> reservationsByPark = resDAO.getReservationsForNext30(LocalDate.now(), LocalDate.now().plusMonths(1), prevPark); 
 		displayNext30Res(reservationsByPark);
 	}
+
+//	BONUS method, under construction
+//	public void entireParkSearch(int prevPark) {
+//		campSiteSearch(prevPark);
+//		
+//	}
 	
 	private void campSiteSearch(int prevPark) {
 

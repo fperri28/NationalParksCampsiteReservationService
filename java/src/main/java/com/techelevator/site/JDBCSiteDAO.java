@@ -58,6 +58,40 @@ public class JDBCSiteDAO implements SiteDAO {
 		return allCampsgroundsInAPark;
 	}
 
+
+	@Override
+	public List<Site> getAvailableCampgroundResByPark(int parkId, LocalDate fromDate, LocalDate toDate, String fromMonth, String toMonth){
+		List<Site> reservationByAllCampgroundsInAPark = new ArrayList<Site>();
+		
+		List<Site> totalCamps = getAllCampgroundsByParkId(parkId);
+		
+		for(int i = 0; i < totalCamps.size(); i++) {
+
+			String sqlListAllResBySiteQuery = 	" SELECT * " +
+												" FROM site " +
+												" INNER JOIN campground " +
+												" ON campground.campground_id = site.campground_id " +
+												" WHERE park_id = ? " +
+												" AND campground.campground_id = ? " +
+												" AND site_id NOT IN (SELECT reservation.site_id " +
+												" FROM reservation " +
+												" INNER JOIN site ON reservation.site_id = site.site_id " +
+												" WHERE from_date BETWEEN ? AND ? " +
+												" AND to_date BETWEEN ? AND ? " +
+												" GROUP BY site.campground_id, reservation.reservation_id, site.site_id ) " +
+												" AND open_from_mm <= ? AND open_to_mm >= ? " +
+												" LIMIT 5 ";
+
+			SqlRowSet results = jdbcTemplate.queryForRowSet(sqlListAllResBySiteQuery, parkId, totalCamps.get(i), fromDate, toDate, fromDate, toDate, fromMonth, toMonth);
+
+			while(results.next()) {	
+				Site aFreeSite = mapRowToSite(results);
+				reservationByAllCampgroundsInAPark.add(aFreeSite);
+			}
+		}
+		
+		return reservationByAllCampgroundsInAPark;
+	}
 	
 	
 	@Override

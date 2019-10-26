@@ -228,9 +228,8 @@ public class CampgroundCLI {
 		 * arrival less departure date
 		 * Open Season
 		 * 
-		 * 
-		 * 
 		 */
+		
 		
 		boolean success = false;
 		LocalDate arrDate = null;
@@ -285,8 +284,15 @@ public class CampgroundCLI {
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/d/yyyy");
 		String inputDate = getUserInput(message);
 		LocalDate date = LocalDate.parse(inputDate, formatter);
+		LocalDate today = LocalDate.now();
+		
+		if(date.isBefore(today)) {
+			System.out.println("Invalid Date");	
+			
+		}
 		return date;
 	}
+	
 	
 	private void selectReservation(LocalDate fromDate, LocalDate toDate) {
 		Integer userSelSite = Integer.parseInt(getUserInput("\n\nWhich site should be reserved (enter 0 to cancel)?"));
@@ -364,10 +370,10 @@ public class CampgroundCLI {
 				System.out.printf(String.format("%-13s", "$" + cur.getDaily_fee().setScale(2)));
 				System.out.println();
 			}
+			
 		} else {
 			System.out.println("\n*** No results ***");
 		}
-		
 	}
 	
 	public void displayAvailRes(List<Site> resSearch, BigDecimal duration) {  

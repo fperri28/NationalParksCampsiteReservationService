@@ -223,19 +223,43 @@ public class CampgroundCLI {
 		LocalDate depDate = null;
 		LocalDate arrDate = null;
 		List<Site> availRes = null;
-		
-		Integer userSelCampId = Integer.parseInt(getUserInput("\n\nWhich campground(enter 0 to cancel)?"));
+		Integer userSelCampId = null;
+	   
+		/*
+		//NumberFormatException
+	    try {
+            // intentional error
+            String s = "FOOBAR";
+            int i = Integer.parseInt(s);
 
-		for(Campground cur: campgrounds) {
-			idList.add(cur.getCampground_id());
-		}
+            // this line of code will never be reached
+            System.out.println("int value = " + i);
+        }
+        catch (NumberFormatException nfe) {
+            nfe.printStackTrace();
+        }
+        */
+	    
 		
-		// User campground validator
-		if(userSelCampId == 0) {
-			return;
-		} else if(!idList.contains(userSelCampId)) {
-			System.out.println("\nINVALID SELECTION");
-			return;
+		
+		
+		try {
+		
+			userSelCampId = Integer.parseInt(getUserInput("\n\nWhich campground(enter 0 to cancel)?"));
+
+			for(Campground cur: campgrounds) {
+				idList.add(cur.getCampground_id());
+			}
+			
+			// User campground validator
+			if(userSelCampId == 0) {
+				return;
+			} else if(!idList.contains(userSelCampId)) {
+				System.out.println("\nINVALID SELECTION");
+				return;
+			}
+		} catch (NumberFormatException e) {
+			System.out.println("Please enter valid input");
 		}
 		
 		// Get user arrival date
@@ -278,6 +302,9 @@ public class CampgroundCLI {
 	    	System.out.println("Invalid date selection. Departure date must be after arrival date");
 	    	return;
 	    }
+
+	    
+	    
 	    
 	    // Validate query results
 		if(availRes.size() > 0) { 

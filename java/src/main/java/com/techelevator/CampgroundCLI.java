@@ -62,7 +62,6 @@ public class CampgroundCLI {
 	private CampgroundDAO campDAO;
 	private ReservationDAO resDAO;
 	private SiteDAO siteDAO;
-	private int prevPark;
 	public static void main(String[] args) {
 		CampgroundCLI application = new CampgroundCLI();
 		application.run();
@@ -100,7 +99,6 @@ public class CampgroundCLI {
 					endMethodProcessing();
 				} else {
 					displayParkDetails(choice);
-					prevPark = parkDAO.getParkByName(choice).getPark_id();
 					campgrounds(choice);
 				}
 		}
@@ -117,8 +115,9 @@ public class CampgroundCLI {
 			String choice = (String) campgroundMenu.getChoiceFromOptions(SUB_MENU_OPTIONS); 
 			if(choice.equals(VIEW_CAMPGROUNDS)){
 				System.out.println("\n" + park + " National Park Campgrounds\n");
-				displayCampgroundsByPark();
-				reservationsMenu();
+				int prevPark = parkDAO.getParkByName(park).getPark_id();
+				displayCampgroundsByPark(prevPark);
+				reservationsMenu(prevPark);
 			} else if(choice.equals(SEARCH_RESERVATIONS)) {
 				reservations();
 			} else if(choice.equals(RETURN_TO_MAIN_MENU)) {
@@ -132,13 +131,13 @@ public class CampgroundCLI {
 	 * Display the sub menu and process option chosen
 	 ***************************************************************************************************************************/
 
-	public void reservationsMenu() {
+	public void reservationsMenu(int prevPark) {
 		String choice = (String) campgroundMenu.getChoiceFromOptions(RESERVATION_MENU_OPTIONS); 
 
 		if(choice.equals(SEARCH_FOR_AVAILABLE_RESERVATIONS)){
-			campSiteSearch();
+			campSiteSearch(prevPark);
 		} else if(choice.equals(SEARCH_FOR_BOOKED_RESERVATIONS)) {
-			displayNext30DaysOfReservations();
+			displayNext30DaysOfReservations(prevPark);
 		}
 		else if(choice.equals(MENU_EXIT)) {
 			return;
@@ -194,17 +193,17 @@ public class CampgroundCLI {
 	}
 	
 	
-	public void displayCampgroundsByPark() {
+	public void displayCampgroundsByPark(int prevPark) {
 		List<Campground> campgroundsByPark = campDAO.getCampgroundByPark(prevPark); 
 		displayCampgrounds(campgroundsByPark);
 	}
 	
-	public void displayNext30DaysOfReservations() {
+	public void displayNext30DaysOfReservations(int prevPark) {
 		List<Reservation> reservationsByPark = resDAO.getReservationsForNext30(LocalDate.now(), LocalDate.now().plusMonths(1), prevPark); 
 		displayNext30Res(reservationsByPark);
 	}
 	
-	private void campSiteSearch() {
+	private void campSiteSearch(int prevPark) {
 
 		List<Campground> campgrounds = campDAO.getCampgroundByPark(prevPark);
 		Set<Integer> idList = new HashSet<Integer> ();
@@ -281,7 +280,7 @@ public class CampgroundCLI {
 			do {
 				inputAltDate = getUserInput("\nWould you like to search an alternate dates? Y/N").toUpperCase();
 				if (inputAltDate.contains("Y")) {
-					campSiteSearch();
+					campSiteSearch(prevPark);
 				} else if(inputAltDate.contains("N")){
 					return;
 				}

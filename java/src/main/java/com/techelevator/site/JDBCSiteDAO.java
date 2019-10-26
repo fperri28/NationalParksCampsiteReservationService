@@ -46,7 +46,9 @@ public class JDBCSiteDAO implements SiteDAO {
 		List<Site> allCampsgroundsInAPark = new ArrayList<Site>();
 		
 		String sqlGetAllCampgroundsFromParkId = "SELECT * " + 
-												"FROM campground " + 
+												"FROM site " + 
+												"INNER JOIN campground " + 
+												"ON campground.campground_id = site.campground_id " + 
 												"WHERE park_id = ? "
 												;
 		SqlRowSet results = jdbcTemplate.queryForRowSet(sqlGetAllCampgroundsFromParkId, parkId);

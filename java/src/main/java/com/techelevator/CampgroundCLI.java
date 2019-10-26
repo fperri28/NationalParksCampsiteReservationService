@@ -44,12 +44,12 @@ public class CampgroundCLI {
 																		RETURN_TO_MAIN_MENU };
 
 	private static final String SEARCH_FOR_AVAILABLE_RESERVATIONS 			= "Search for Available Reservations";
-	private static final String SEARCH_FOR_AVAILABLE_RESERVATIONS_BY_PARK 	= "Search for Available Reservations in the entire Park";	
+//	private static final String SEARCH_FOR_AVAILABLE_RESERVATIONS_BY_PARK 	= "Search for Available Reservations in the entire Park";	
 	private static final String SEARCH_FOR_BOOKED_RESERVATIONS 				= "View Booked Reservations";	
 	private static final String	MENU_EXIT									= "Return to Previous Screen";
 	private static final String[] RESERVATION_MENU_OPTIONS 					= { SEARCH_FOR_AVAILABLE_RESERVATIONS,
 																				SEARCH_FOR_BOOKED_RESERVATIONS,
-// BONUS - Under Construction													SEARCH_FOR_AVAILABLE_RESERVATIONS_BY_PARK,
+//																				SEARCH_FOR_AVAILABLE_RESERVATIONS_BY_PARK,
 																				MENU_EXIT};
 	
 ///////////////////////////////////////	Variables / Main / Constructor //////////////////////////////////////////////////
@@ -131,12 +131,12 @@ public class CampgroundCLI {
 		String choice = (String) campgroundMenu.getChoiceFromOptions(RESERVATION_MENU_OPTIONS); 
 
 		if(choice.equals(SEARCH_FOR_AVAILABLE_RESERVATIONS)){
-			campSiteSearch(prevPark);
+			askForCampgrounId(prevPark);
 		}
 //		
 //		BONUS under construction		
 //		else if(choice.equals(SEARCH_FOR_AVAILABLE_RESERVATIONS_BY_PARK)) {
-//			
+//			entireParkSearch(prevPark);
 //		}
 		else if(choice.equals(SEARCH_FOR_BOOKED_RESERVATIONS)) {
 			displayNext30DaysOfReservations(prevPark);
@@ -209,25 +209,22 @@ public class CampgroundCLI {
 		displayNext30Res(reservationsByPark);
 	}
 
-//	BONUS method, under construction
+//	BONUS method, under construction - I cannot finish this due to selectReservation being coded into our date data collection
 //	public void entireParkSearch(int prevPark) {
-//		campSiteSearch(prevPark);
-//		
+//		List<Campground> campgroundsList = campDAO.getCampgroundByPark(prevPark);		
+//		Campground campground = campgroundsList.get(0);
+//		int campgroundId = campground.getCampground_id();
+//		campSiteSearch(prevPark, campgroundId);
 //	}
 	
-	private void campSiteSearch(int prevPark) {
-
+	public void askForCampgrounId(int prevPark) {
 		List<Campground> campgrounds = campDAO.getCampgroundByPark(prevPark);
 		Set<Integer> idList = new HashSet<Integer> ();
-		LocalDate depDate = null;
-		LocalDate arrDate = null;
-		List<Site> availRes = null;
 		Integer userSelCampId = null;
-	   
 		boolean success = false;
-		
+
 		do {
-		
+			
 			try {
 		
 				userSelCampId = Integer.parseInt(getUserInput("\n\nWhich campground(enter 0 to cancel)?"));
@@ -247,11 +244,63 @@ public class CampgroundCLI {
 			} catch (NumberFormatException e) {
 				System.out.println("Please enter valid input");
 			}
-		}
-		while(!success);
+		}	while(!success);
+		campSiteSearch(prevPark, userSelCampId);
+	}
+	
+	
+	private void campSiteSearch(int prevPark, int campgroundId) {
+// Everything commented out in this method is now in Method askForCampgroundId. This works but I wanted to let you test it before deleting.
+//
+//		List<Campground> campgrounds = campDAO.getCampgroundByPark(prevPark);
+//		Set<Integer> idList = new HashSet<Integer> ();
+		LocalDate depDate = null;
+		LocalDate arrDate = null;
+		List<Site> availRes = null;
+//		Integer userSelCampId = null;
+	   
+		/*
+		//NumberFormatException
+	    try {
+            // intentional error
+            String s = "FOOBAR";
+            int i = Integer.parseInt(s);
+
+            // this line of code will never be reached
+            System.out.println("int value = " + i);
+        }
+        catch (NumberFormatException nfe) {
+            nfe.printStackTrace();
+        }
+        */
+		boolean success = false;
+//		
+//		do {
+//		
+//			try {
+//		
+//				userSelCampId = Integer.parseInt(getUserInput("\n\nWhich campground(enter 0 to cancel)?"));
+//
+//				for(Campground cur: campgrounds) {
+//					idList.add(cur.getCampground_id());
+//				}
+//
+//				// User campground validator
+//				if(userSelCampId == 0) {
+//					return;
+//				} else if(!idList.contains(userSelCampId)) {
+//					System.out.println("\nINVALID SELECTION");
+//					return;
+//				}
+//				success = true;
+//			} catch (NumberFormatException e) {
+//				System.out.println("Please enter valid input");
+//			}
+//		}
+//		while(!success);
 		
 		// Get user arrival date
-		success = false;
+//		success = false;
 		
 		do {
 			try {
@@ -285,18 +334,16 @@ public class CampgroundCLI {
 	    
 	    // Validate dates 
 	    if(arrDate.isBefore(depDate)) {
-	    	availRes = siteDAO.getAvailableResBySite(userSelCampId, prevPark, arrDate, depDate, arrMonth, depMonth);
+	    	availRes = siteDAO.getAvailableResBySite(campgroundId, prevPark, arrDate, depDate, arrMonth, depMonth);
 	    } else {
 	    	System.out.println("Invalid date selection. Departure date must be after arrival date");
 	    	return;
 	    }
-
-	    
-	    
 	    
 	    // Validate query results
 		if(availRes.size() > 0) { 
 			displayAvailRes(availRes, stayDays);
+// selectReservation is where I'm having my issue for the Bonue
 			selectReservation(arrDate, depDate);
 		} else {
 			
@@ -305,7 +352,7 @@ public class CampgroundCLI {
 			do {
 				inputAltDate = getUserInput("\nWould you like to search an alternate dates? Y/N").toUpperCase();
 				if (inputAltDate.contains("Y")) {
-					campSiteSearch(prevPark);
+					campSiteSearch(prevPark, campgroundId);
 				} else if(inputAltDate.contains("N")){
 					return;
 				}
@@ -343,7 +390,7 @@ public class CampgroundCLI {
 		String userName = getUserInput("\nWhat name should the reservation be made under?");
 		Reservation newRes = resDAO.addReservations(userName, fromDate, toDate, userSelSite);
 		
-		System.out.println("Congratulations " + newRes.getName() + ", you are booked.");
+		System.out.println("\nCongratulations " + newRes.getName() + ", you are booked.");
 		System.out.println("Your confirmation number/reservation id is: ");
 		System.out.println(newRes.getReservation_id());
 		System.out.println("Your arrival date is: ");

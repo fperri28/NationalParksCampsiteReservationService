@@ -60,7 +60,7 @@ public class JDBCCampgroundDAO implements CampgroundDAO{
 		List<Campground> campByPark = new ArrayList<Campground>();
 		
 		String sqlListAllCampgroundsQuery = "SELECT * "+
-				   							"FROM Campground " +
+				   							"FROM campground " +
 				   							"WHERE park_id = ? " +
 				   							"ORDER BY name ASC";
 		SqlRowSet results = jdbcTemplate.queryForRowSet(sqlListAllCampgroundsQuery, parkId);

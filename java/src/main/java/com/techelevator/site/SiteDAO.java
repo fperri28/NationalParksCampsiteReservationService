@@ -24,6 +24,8 @@ public interface SiteDAO {
 
 	public List<Site> getCampgroundBySite(int siteId);
 	
+	public List<Site> getAllCampgroundsByParkId(int parkId);
+	
 	public Site getDailyFeeByCampgroundId(int campgroundId, int siteId);
 	
 	//return all available reservations by site

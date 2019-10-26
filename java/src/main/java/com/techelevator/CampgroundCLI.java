@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.time.LocalDate;
+import java.time.Month;
 import java.time.Period;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -223,14 +224,9 @@ public class CampgroundCLI {
 		
 		/*
 		 * Date TO DO
-		 * Past Dates
-		 * Day error message
 		 * arrival less departure date
 		 * Open Season
-		 * 
 		 */
-		
-		
 		boolean success = false;
 		LocalDate arrDate = null;
 		
@@ -250,6 +246,7 @@ public class CampgroundCLI {
 		do {
 			try {
 				depDate = getUserInputDate("What is the departure date?__/__/____");
+				// compare departure to arrival 
 				success = true;
 			} catch (DateTimeParseException e){
 				System.out.println("Please insert valid date");
@@ -259,8 +256,13 @@ public class CampgroundCLI {
 	 
 	    Period intervalPeriod = Period.between(arrDate, depDate);
 	    BigDecimal stayDays = new BigDecimal(intervalPeriod.getDays());
-				
-		List<Site> availRes = siteDAO.getAvailableResBySite(userSelCampId, prevPark, arrDate, depDate);
+		
+	    String arrMonth = String.valueOf(arrDate.getMonthValue());
+	    String depMonth = String.valueOf(depDate.getMonthValue());
+	    
+	    
+	    
+		List<Site> availRes = siteDAO.getAvailableResBySite(userSelCampId, prevPark, arrDate, depDate, arrMonth, depMonth);
 				
 		if(availRes.size() > 0) { 
 			displayAvailRes(availRes, stayDays);

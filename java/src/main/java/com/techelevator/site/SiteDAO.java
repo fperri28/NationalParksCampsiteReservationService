@@ -27,7 +27,7 @@ public interface SiteDAO {
 	public Site getDailyFeeByCampgroundId(int campgroundId, int siteId);
 	
 	//return all available reservations by site
-	public List<Site> getAvailableResBySite(int campId, int parkId, LocalDate fromDate, LocalDate toDate);
+	public List<Site> getAvailableResBySite(int campId, int parkId, LocalDate fromDate, LocalDate toDate, String fromMonth, String toMonth);
 			
 	public String stringTrueFalseSwitch(boolean trueFalseStatement);
 	

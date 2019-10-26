@@ -41,7 +41,7 @@ public class JDBCSiteDAO implements SiteDAO {
 	}
 	
 	@Override
-	public List<Site> getAvailableResBySite(int campId, int parkId, LocalDate fromDate, LocalDate toDate){
+	public List<Site> getAvailableResBySite(int campId, int parkId, LocalDate fromDate, LocalDate toDate, String fromMonth, String toMonth){
 		List<Site> reservationByAvailableSites = new ArrayList<Site>();
 		
 		String sqlListAllEmpQuery = 	" SELECT * " +
@@ -56,9 +56,10 @@ public class JDBCSiteDAO implements SiteDAO {
 										" WHERE from_date BETWEEN ? AND ? " +
 										" AND to_date BETWEEN ? AND ? " +
 										" GROUP BY site.campground_id, reservation.reservation_id, site.site_id ) " +
+										" AND open_from_mm <= ? AND open_to_mm >= ? " +
 										" LIMIT 5 ";
 		
-		SqlRowSet results = jdbcTemplate.queryForRowSet(sqlListAllEmpQuery, parkId, campId, fromDate, toDate, fromDate, toDate);
+		SqlRowSet results = jdbcTemplate.queryForRowSet(sqlListAllEmpQuery, parkId, campId, fromDate, toDate, fromDate, toDate, fromMonth, toMonth);
 
 		while(results.next()) {	
 			Site aFreeSite = mapRowToSite(results);

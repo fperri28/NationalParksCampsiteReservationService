@@ -103,7 +103,7 @@ public class CampgroundCLI {
 	}
 
 	/**************************************************************************************************************************
-	 * CampgroundCLI sub menu for purchase =
+	 * CampgroundCLI sub menu for Campgrounds and reservations search
 	 * 
 	 * Display the Sub menu and process option chosen
 	 ***************************************************************************************************************************/
@@ -123,24 +123,21 @@ public class CampgroundCLI {
 		}
 
 	/**************************************************************************************************************************
-	 * CampgroundCLI loop
+	 * CampgroundCLI new Reservation menu
 	 * 
 	 * Display the sub menu and process option chosen
 	 ***************************************************************************************************************************/
 
 	public void reservationsMenu() {
-
 		String choice = (String) campgroundMenu.getChoiceFromOptions(RESERVATION_MENU_OPTIONS); 
 
 		if(choice.equals(SEARCH_FOR_AVAILABLE_RESERVATIONS)){
 			campSiteSearch();
-
 		} else if(choice.equals(MENU_EXIT)) {
 			return;
 		}
 		
 	}
-	
 	
 
 	/********************************************************************************************************
@@ -150,33 +147,31 @@ public class CampgroundCLI {
 	
 	
 	public void reservations() {
-	Integer userReservationId = Integer.parseInt(getUserInput(	"\n\nPlease Enter Your Reservation ID: " +
+		Integer userReservationId = Integer.parseInt(getUserInput(	"\n\nPlease Enter Your Reservation ID: " +
 			"(enter 0 to cancel)"));
 	
-	Reservation reservation = resDAO.getReservationById(userReservationId);
+		Reservation reservation = resDAO.getReservationById(userReservationId);
 	
-	if(userReservationId.equals(0)) {
-		return;
-	}else if(reservation != null){
-		System.out.println();
-		System.out.println("Congratulations " + reservation.getName() + ", you are booked.");
-		System.out.println("Your reservation id is : " + reservation.getReservation_id());
-		System.out.println("Your site id is : " + reservation.getSite_id());
-		System.out.println("Your arrival date is: " + reservation.getFrom_date());
-		System.out.println("Your departure date is: " + reservation.getTo_date());
-		return;
-		
-	} else {
-		System.out.println("Invalid Reservation ID, please try again.");
-		reservations();
-		return;
-	}}
+		if(userReservationId.equals(0)) {
+			return;
+		} else if (reservation != null) {
+			System.out.println();
+			System.out.println("Congratulations " + reservation.getName() + ", you are booked.");
+			System.out.println("Your reservation id is : " + reservation.getReservation_id());
+			System.out.println("Your site id is : " + reservation.getSite_id());
+			System.out.println("Your arrival date is: " + reservation.getFrom_date());
+			System.out.println("Your departure date is: " + reservation.getTo_date());
+			return;
+		} else {
+			System.out.println("Invalid Reservation ID, please try again.");
+			reservations();
+			return;
+		}
+	}
 
 	public Object[] displayParks() {
 		List<Park> parks = parkDAO.getAllParks();
 		List<String> parkNames = new ArrayList<String>();
-		
-		System.out.println("\n");
 		
 		if(parks.size() > 0) {
 			for(Park cur : parks) {
@@ -185,19 +180,22 @@ public class CampgroundCLI {
 		} else {
 			System.out.println("\n*** No results ***");
 		}
+		
 		parkNames.add("Quit");
+		
 		return parkNames.toArray();
 	}
 	
 	
 	public void displayCampgroundsByPark() {
 		List<Campground> campgroundsByPark = campDAO.getCampgroundByPark(prevPark); 
-	   displayCampgrounds(campgroundsByPark);
+		displayCampgrounds(campgroundsByPark);
 	}
 	
 	private void campSiteSearch() {
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/d/yyyy");
 		Integer userSelCampId = Integer.parseInt(getUserInput("\n\nWhich campground(enter 0 to cancel)?"));
+
 		List<Campground> campgrounds = campDAO.getCampgroundByPark(prevPark);
 		Set<Integer> idList = new HashSet<Integer> ();
 		
@@ -223,33 +221,28 @@ public class CampgroundCLI {
 		 * 
 		 */
 		
-		
-		
-		
-		
-		
 		boolean success = false;
 		LocalDate arrDate = null;
+		
 		do {
 			try {
-				String inputArrDate = getUserInput("What is the arrival date?__/__/____");
-				arrDate = LocalDate.parse(inputArrDate, formatter);
+				arrDate = getUserInputDate("What is the arrival date?__/__/____");
 				success = true;
 			} catch (DateTimeParseException e){
-				System.out.println("Please insert valid month 1-12");
+				System.out.println("Please insert valid date");
 			}
 		}
 		while(!success);
 		
 		LocalDate depDate = null;
 		success = false;
+		
 		do {
 			try {
-				String inputDepartureDate = getUserInput("What is the departure date?__/__/____");
-				depDate = LocalDate.parse(inputDepartureDate, formatter);
+				depDate = getUserInputDate("What is the departure date?__/__/____");
 				success = true;
 			} catch (DateTimeParseException e){
-				System.out.println("Please insert valid month 1-12");
+				System.out.println("Please insert valid date");
 			}
 		}
 		while(!success);			
@@ -268,27 +261,40 @@ public class CampgroundCLI {
 			String inputAltDate = null;
 			do {
 				inputAltDate = getUserInput("\nWould you like to search an alternate dates? Y/N").toUpperCase();
-			if (inputAltDate.contains("Y")) {
-				campSiteSearch();
-			} else if(inputAltDate.contains("N")){
-				return;
-			}
+				if (inputAltDate.contains("Y")) {
+					campSiteSearch();
+				} else if(inputAltDate.contains("N")){
+					return;
+				}
 			} while (!inputAltDate.equals("Y") && !inputAltDate.equals("N"));
 		}
 	}
 	
+	private LocalDate getUserInputDate(String message) {
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/d/yyyy");
+		String inputDate = getUserInput(message);
+		LocalDate date = LocalDate.parse(inputDate, formatter);
+		return date;
+	}
+	
+	
+	
 	private void selectReservation(LocalDate fromDate, LocalDate toDate) {
 		Integer userSelSite = Integer.parseInt(getUserInput("\n\nWhich site should be reserved (enter 0 to cancel)?"));
+		
 		if(userSelSite == 0) {
 			return;
 		}
+	
 		String userName = getUserInput("\nWhat name should the reservation be made under?");
 		Reservation newRes = resDAO.addReservations(userName, fromDate, toDate, userSelSite);
+		
 		System.out.println("Congratulations " + newRes.getName() + ", you are booked.");
 		System.out.println("Your confirmation number/reservation id is : " + newRes.getReservation_id());
 		System.out.println("Your arrival date is: " + newRes.getFrom_date());
 		System.out.println("Your departure date is: " + newRes.getTo_date());
 		System.out.println("\nThank you for booking with the National Park Data Base, we look forward to hosting you!");
+		
 		return;
 	}
 	

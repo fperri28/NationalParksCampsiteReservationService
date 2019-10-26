@@ -229,7 +229,7 @@ public class CampgroundCLI {
 		
 		do {
 			try {
-				arrDate = getUserInputDate("What is the arrival date?__/__/____");
+				arrDate = getUserInputDate("What is the arrival date? MM/DD/YYY");
 				success = true;
 			} catch (DateTimeParseException e){
 				System.out.println("Please insert valid date");
@@ -242,7 +242,7 @@ public class CampgroundCLI {
 		
 		do {
 			try {
-				depDate = getUserInputDate("What is the departure date?__/__/____");
+				depDate = getUserInputDate("What is the departure date? MM/DD/YYY");
 				success = true;
 			} catch (DateTimeParseException e){
 				System.out.println("Please insert valid date");

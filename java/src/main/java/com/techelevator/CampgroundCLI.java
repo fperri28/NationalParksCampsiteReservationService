@@ -285,11 +285,16 @@ public class CampgroundCLI {
 		String inputDate = getUserInput(message);
 		LocalDate date = LocalDate.parse(inputDate, formatter);
 		LocalDate today = LocalDate.now();
-		
-		if(date.isBefore(today)) {
-			System.out.println("Invalid Date");	
-			
-		}
+		Boolean validDate = false;
+		do {
+			if(date.isAfter(today)) {
+				validDate = true;
+			} else {
+				System.out.println("Input date in past");
+				inputDate = getUserInput(message);
+				date = LocalDate.parse(inputDate, formatter);
+			}
+		}while(!validDate);
 		return date;
 	}
 	

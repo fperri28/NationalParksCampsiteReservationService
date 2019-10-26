@@ -1,6 +1,5 @@
 package com.techelevator;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.MathContext;
@@ -225,20 +224,6 @@ public class CampgroundCLI {
 		List<Site> availRes = null;
 		Integer userSelCampId = null;
 	   
-		/*
-		//NumberFormatException
-	    try {
-            // intentional error
-            String s = "FOOBAR";
-            int i = Integer.parseInt(s);
-
-            // this line of code will never be reached
-            System.out.println("int value = " + i);
-        }
-        catch (NumberFormatException nfe) {
-            nfe.printStackTrace();
-        }
-        */
 		boolean success = false;
 		
 		do {
@@ -516,23 +501,6 @@ public class CampgroundCLI {
 	}
 	
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

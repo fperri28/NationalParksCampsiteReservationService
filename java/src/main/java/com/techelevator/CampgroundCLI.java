@@ -225,31 +225,34 @@ public class CampgroundCLI {
             nfe.printStackTrace();
         }
         */
-	    
+		boolean success = false;
 		
+		do {
 		
+			try {
 		
-		try {
-		
-			userSelCampId = Integer.parseInt(getUserInput("\n\nWhich campground(enter 0 to cancel)?"));
+				userSelCampId = Integer.parseInt(getUserInput("\n\nWhich campground(enter 0 to cancel)?"));
 
-			for(Campground cur: campgrounds) {
-				idList.add(cur.getCampground_id());
+				for(Campground cur: campgrounds) {
+					idList.add(cur.getCampground_id());
+				}
+
+				// User campground validator
+				if(userSelCampId == 0) {
+					return;
+				} else if(!idList.contains(userSelCampId)) {
+					System.out.println("\nINVALID SELECTION");
+					return;
+				}
+				success = true;
+			} catch (NumberFormatException e) {
+				System.out.println("Please enter valid input");
 			}
-			
-			// User campground validator
-			if(userSelCampId == 0) {
-				return;
-			} else if(!idList.contains(userSelCampId)) {
-				System.out.println("\nINVALID SELECTION");
-				return;
-			}
-		} catch (NumberFormatException e) {
-			System.out.println("Please enter valid input");
 		}
+		while(!success);
 		
 		// Get user arrival date
-		boolean success = false;
+		success = false;
 		
 		do {
 			try {
@@ -310,6 +313,7 @@ public class CampgroundCLI {
 			} while (!inputAltDate.equals("Y") && !inputAltDate.equals("N"));
 		}
 	}
+		
 	
 	private LocalDate getUserInputDate(String message) {
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/d/yyyy");

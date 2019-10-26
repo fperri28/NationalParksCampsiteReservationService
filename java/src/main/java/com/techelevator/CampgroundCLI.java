@@ -1,10 +1,7 @@
 package com.techelevator;
 
-import java.io.IOException;
 import java.math.BigDecimal;
-import java.math.MathContext;
 import java.time.LocalDate;
-import java.time.Month;
 import java.time.Period;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -14,7 +11,6 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.Set;
 
-import javax.sql.DataSource;
 
 import org.apache.commons.dbcp2.BasicDataSource;
 
@@ -44,12 +40,12 @@ public class CampgroundCLI {
 																		RETURN_TO_MAIN_MENU };
 
 	private static final String SEARCH_FOR_AVAILABLE_RESERVATIONS 			= "Search for Available Reservations";
-//	private static final String SEARCH_FOR_AVAILABLE_RESERVATIONS_BY_PARK 	= "Search for Available Reservations in the entire Park";	
+	private static final String SEARCH_FOR_AVAILABLE_RESERVATIONS_BY_PARK 	= "Search for Available Reservations in the entire Park";	
 	private static final String SEARCH_FOR_BOOKED_RESERVATIONS 				= "View Booked Reservations";	
 	private static final String	MENU_EXIT									= "Return to Previous Screen";
 	private static final String[] RESERVATION_MENU_OPTIONS 					= { SEARCH_FOR_AVAILABLE_RESERVATIONS,
 																				SEARCH_FOR_BOOKED_RESERVATIONS,
-//																				SEARCH_FOR_AVAILABLE_RESERVATIONS_BY_PARK,
+																				SEARCH_FOR_AVAILABLE_RESERVATIONS_BY_PARK,
 																				MENU_EXIT};
 	
 ///////////////////////////////////////	Variables / Main / Constructor //////////////////////////////////////////////////
@@ -131,13 +127,13 @@ public class CampgroundCLI {
 		String choice = (String) campgroundMenu.getChoiceFromOptions(RESERVATION_MENU_OPTIONS); 
 
 		if(choice.equals(SEARCH_FOR_AVAILABLE_RESERVATIONS)){
-			askForCampgrounId(prevPark);
+			askForCampgrounId(prevPark, choice);
 		}
 //		
 //		BONUS under construction		
-//		else if(choice.equals(SEARCH_FOR_AVAILABLE_RESERVATIONS_BY_PARK)) {
-//			entireParkSearch(prevPark);
-//		}
+		else if(choice.equals(SEARCH_FOR_AVAILABLE_RESERVATIONS_BY_PARK)) {
+			entireParkSearch(prevPark, choice);
+		}
 		else if(choice.equals(SEARCH_FOR_BOOKED_RESERVATIONS)) {
 			displayNext30DaysOfReservations(prevPark);
 		}
@@ -210,17 +206,19 @@ public class CampgroundCLI {
 	}
 
 //	BONUS method, under construction - I cannot finish this due to selectReservation being coded into our date data collection
-//	public void entireParkSearch(int prevPark) {
-//		List<Campground> campgroundsList = campDAO.getCampgroundByPark(prevPark);		
-//		Campground campground = campgroundsList.get(0);
-//		int campgroundId = campground.getCampground_id();
-//		campSiteSearch(prevPark, campgroundId);
-//	}
+	public void entireParkSearch(int prevPark, String choice) {
+		List<Campground> campgroundsList = campDAO.getCampgroundByPark(prevPark);		
+		Campground campground = campgroundsList.get(0);
+		
+		int campgroundId = campground.getCampground_id();
+		campSiteSearch(prevPark, campgroundId, choice);
+	}
 	
-	public void askForCampgrounId(int prevPark) {
+	public void askForCampgrounId(int prevPark, String choice) {
 		List<Campground> campgrounds = campDAO.getCampgroundByPark(prevPark);
 		Set<Integer> idList = new HashSet<Integer> ();
 		Integer userSelCampId = null;
+	
 		boolean success = false;
 
 		do {
@@ -245,62 +243,16 @@ public class CampgroundCLI {
 				System.out.println("Please enter valid input");
 			}
 		}	while(!success);
-		campSiteSearch(prevPark, userSelCampId);
+		campSiteSearch(prevPark, userSelCampId, choice);
 	}
 	
 	
-	private void campSiteSearch(int prevPark, int campgroundId) {
-// Everything commented out in this method is now in Method askForCampgroundId. This works but I wanted to let you test it before deleting.
-//
-//		List<Campground> campgrounds = campDAO.getCampgroundByPark(prevPark);
-//		Set<Integer> idList = new HashSet<Integer> ();
+	private void campSiteSearch(int prevPark, int campgroundId, String choice) { //
 		LocalDate depDate = null;
 		LocalDate arrDate = null;
 		List<Site> availRes = null;
-//		Integer userSelCampId = null;
-	   
-		/*
-		//NumberFormatException
-	    try {
-            // intentional error
-            String s = "FOOBAR";
-            int i = Integer.parseInt(s);
 
-            // this line of code will never be reached
-            System.out.println("int value = " + i);
-        }
-        catch (NumberFormatException nfe) {
-            nfe.printStackTrace();
-        }
-        */
 		boolean success = false;
-//		
-//		do {
-//		
-//			try {
-//		
-//				userSelCampId = Integer.parseInt(getUserInput("\n\nWhich campground(enter 0 to cancel)?"));
-//
-//				for(Campground cur: campgrounds) {
-//					idList.add(cur.getCampground_id());
-//				}
-//
-//				// User campground validator
-//				if(userSelCampId == 0) {
-//					return;
-//				} else if(!idList.contains(userSelCampId)) {
-//					System.out.println("\nINVALID SELECTION");
-//					return;
-//				}
-//				success = true;
-//			} catch (NumberFormatException e) {
-//				System.out.println("Please enter valid input");
-//			}
-//		}
-//		while(!success);
-		
-		// Get user arrival date
-//		success = false;
 		
 		do {
 			try {
@@ -333,8 +285,10 @@ public class CampgroundCLI {
 	    String depMonth = String.valueOf(depDate.getMonthValue());
 	    
 	    // Validate dates 
-	    if(arrDate.isBefore(depDate)) {
+	    if(arrDate.isBefore(depDate) && choice.equals(SEARCH_FOR_AVAILABLE_RESERVATIONS))  {
 	    	availRes = siteDAO.getAvailableResBySite(campgroundId, prevPark, arrDate, depDate, arrMonth, depMonth);
+	    }else if(arrDate.isBefore(depDate) && choice.equals(SEARCH_FOR_AVAILABLE_RESERVATIONS_BY_PARK)) {
+	        availRes = siteDAO.getAvailableCampgroundResByPark(prevPark, arrDate, depDate, arrMonth, depMonth);
 	    } else {
 	    	System.out.println("Invalid date selection. Departure date must be after arrival date");
 	    	return;
@@ -343,7 +297,7 @@ public class CampgroundCLI {
 	    // Validate query results
 		if(availRes.size() > 0) { 
 			displayAvailRes(availRes, stayDays);
-// selectReservation is where I'm having my issue for the Bonue
+// selectReservation is where I'm having my issue for the Bonus
 			selectReservation(arrDate, depDate);
 		} else {
 			
@@ -352,7 +306,7 @@ public class CampgroundCLI {
 			do {
 				inputAltDate = getUserInput("\nWould you like to search an alternate dates? Y/N").toUpperCase();
 				if (inputAltDate.contains("Y")) {
-					campSiteSearch(prevPark, campgroundId);
+					campSiteSearch(prevPark, campgroundId, choice);
 				} else if(inputAltDate.contains("N")){
 					return;
 				}

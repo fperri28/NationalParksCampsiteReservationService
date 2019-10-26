@@ -67,7 +67,7 @@ public class JDBCSiteDAO implements SiteDAO {
 		
 		List<Site> totalCamps = getAllCampgroundsByParkId(parkId);
 		
-		for(int i = 0; i < totalCamps.size(); i++) {
+		for(Site cur: totalCamps) {
 
 			String sqlListAllResBySiteQuery = 	" SELECT * " +
 												" FROM site " +
@@ -84,7 +84,7 @@ public class JDBCSiteDAO implements SiteDAO {
 												" AND open_from_mm <= ? AND open_to_mm >= ? " +
 												" LIMIT 5 ";
 
-			SqlRowSet results = jdbcTemplate.queryForRowSet(sqlListAllResBySiteQuery, parkId, totalCamps.get(i), fromDate, toDate, fromDate, toDate, fromMonth, toMonth);
+			SqlRowSet results = jdbcTemplate.queryForRowSet(sqlListAllResBySiteQuery, parkId, cur.getCampground_id(), fromDate, toDate, fromDate, toDate, fromMonth, toMonth);
 
 			while(results.next()) {	
 				Site aFreeSite = mapRowToSite(results);

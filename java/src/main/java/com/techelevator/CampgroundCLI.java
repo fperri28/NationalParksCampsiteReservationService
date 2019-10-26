@@ -205,7 +205,6 @@ public class CampgroundCLI {
 	}
 	
 	private void campSiteSearch() {
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/d/yyyy");
 		Integer userSelCampId = Integer.parseInt(getUserInput("\n\nWhich campground(enter 0 to cancel)?"));
 
 		List<Campground> campgrounds = campDAO.getCampgroundByPark(prevPark);
@@ -222,11 +221,6 @@ public class CampgroundCLI {
 			return;
 		}
 		
-		/*
-		 * Date TO DO
-		 * arrival less departure date
-		 * Open Season
-		 */
 		boolean success = false;
 		LocalDate arrDate = null;
 		
@@ -254,17 +248,24 @@ public class CampgroundCLI {
 		}
 		while(!success);			
 	 
+		
+		
 	    Period intervalPeriod = Period.between(arrDate, depDate);
 	    BigDecimal stayDays = new BigDecimal(intervalPeriod.getDays());
 		
 	    String arrMonth = String.valueOf(arrDate.getMonthValue());
 	    String depMonth = String.valueOf(depDate.getMonthValue());
 	    
+	    List<Site> availRes = null;
+	    if(arrDate.isBefore(depDate)) {
+	    	availRes = siteDAO.getAvailableResBySite(userSelCampId, prevPark, arrDate, depDate, arrMonth, depMonth);
+	    } else {
+	    	System.out.println("Invalid date selection. Departure date must be after arrival date");
+	    	return;
+	    }
 	    
 	    
-		List<Site> availRes = siteDAO.getAvailableResBySite(userSelCampId, prevPark, arrDate, depDate, arrMonth, depMonth);
-				
-		if(availRes.size() > 0) { 
+		if(availRes.size() > 0 && availRes != null) { 
 			displayAvailRes(availRes, stayDays);
 			selectReservation(arrDate, depDate);
 		} else {
@@ -281,6 +282,8 @@ public class CampgroundCLI {
 			} while (!inputAltDate.equals("Y") && !inputAltDate.equals("N"));
 		}
 	}
+	
+	
 	
 	private LocalDate getUserInputDate(String message) {
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/d/yyyy");

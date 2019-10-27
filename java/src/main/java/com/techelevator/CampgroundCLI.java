@@ -1,5 +1,6 @@
 package com.techelevator;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.MathContext;
@@ -43,14 +44,12 @@ public class CampgroundCLI {
 																		SEARCH_RESERVATIONS,
 																		RETURN_TO_MAIN_MENU };
 
-	private static final String SEARCH_FOR_AVAILABLE_RESERVATIONS 			= "Search for Available Reservations";
-//	private static final String SEARCH_FOR_AVAILABLE_RESERVATIONS_BY_PARK 	= "Search for Available Reservations in the entire Park";	
-	private static final String SEARCH_FOR_BOOKED_RESERVATIONS 				= "View Booked Reservations";	
-	private static final String	MENU_EXIT									= "Return to Previous Screen";
-	private static final String[] RESERVATION_MENU_OPTIONS 					= { SEARCH_FOR_AVAILABLE_RESERVATIONS,
-																				SEARCH_FOR_BOOKED_RESERVATIONS,
-//																				SEARCH_FOR_AVAILABLE_RESERVATIONS_BY_PARK,
-																				MENU_EXIT};
+	private static final String SEARCH_FOR_AVAILABLE_RESERVATIONS 	= "Search for Available Reservations";
+	private static final String SEARCH_FOR_BOOKED_RESERVATIONS 		= "View Booked Reservations";	
+	private static final String	MENU_EXIT							= "Return to Previous Screen";
+	private static final String[] RESERVATION_MENU_OPTIONS 			= { SEARCH_FOR_AVAILABLE_RESERVATIONS,
+																		SEARCH_FOR_BOOKED_RESERVATIONS,
+																		MENU_EXIT};
 	
 ///////////////////////////////////////	Variables / Main / Constructor //////////////////////////////////////////////////
 	
@@ -131,14 +130,8 @@ public class CampgroundCLI {
 		String choice = (String) campgroundMenu.getChoiceFromOptions(RESERVATION_MENU_OPTIONS); 
 
 		if(choice.equals(SEARCH_FOR_AVAILABLE_RESERVATIONS)){
-			askForCampgrounId(prevPark);
-		}
-//		
-//		BONUS under construction		
-//		else if(choice.equals(SEARCH_FOR_AVAILABLE_RESERVATIONS_BY_PARK)) {
-//			entireParkSearch(prevPark);
-//		}
-		else if(choice.equals(SEARCH_FOR_BOOKED_RESERVATIONS)) {
+			campSiteSearch(prevPark);
+		} else if(choice.equals(SEARCH_FOR_BOOKED_RESERVATIONS)) {
 			displayNext30DaysOfReservations(prevPark);
 		}
 		else if(choice.equals(MENU_EXIT)) {
@@ -208,18 +201,14 @@ public class CampgroundCLI {
 		List<Reservation> reservationsByPark = resDAO.getReservationsForNext30(LocalDate.now(), LocalDate.now().plusMonths(1), prevPark); 
 		displayNext30Res(reservationsByPark);
 	}
-
-//	BONUS method, under construction - I cannot finish this due to selectReservation being coded into our date data collection
-//	public void entireParkSearch(int prevPark) {
-//		List<Campground> campgroundsList = campDAO.getCampgroundByPark(prevPark);		
-//		Campground campground = campgroundsList.get(0);
-//		int campgroundId = campground.getCampground_id();
-//		campSiteSearch(prevPark, campgroundId);
-//	}
 	
-	public void askForCampgrounId(int prevPark) {
+	private void campSiteSearch(int prevPark) {
+
 		List<Campground> campgrounds = campDAO.getCampgroundByPark(prevPark);
 		Set<Integer> idList = new HashSet<Integer> ();
+		LocalDate depDate = null;
+		LocalDate arrDate = null;
+		List<Site> availRes = null;
 		Integer userSelCampId = null;
 	   
 		boolean success = false;
@@ -282,24 +271,19 @@ public class CampgroundCLI {
 	    
 	    // Validate dates 
 	    if(arrDate.isBefore(depDate)) {
-	    	availRes = siteDAO.getAvailableResBySite(campgroundId, prevPark, arrDate, depDate, arrMonth, depMonth);
+	    	availRes = siteDAO.getAvailableResBySite(userSelCampId, prevPark, arrDate, depDate, arrMonth, depMonth);
 	    } else {
 	    	System.out.println("Invalid date selection. Departure date must be after arrival date");
 	    	return;
 	    }
+
+	    
+	    
 	    
 	    // Validate query results
-		if(availRes.size() > 0 && availRes.size() < 5) {  // < ------ need to tie the campgroundId parameter to this if statement to confirm all campgrounds have same id
+		if(availRes.size() > 0) { 
 			displayAvailRes(availRes, stayDays);
-// selectReservation is where I'm having my issue for the Bonue
 			selectReservation(arrDate, depDate);
-		} else if (availRes.size() > 0 && availRes.size() > 5) {
-
-// If the List<site> is larger then 5 it shouldnt be from one campground. 
-			
-			displayAvailRes(availRes, stayDays);
-
-		
 		} else {
 			
 			System.out.println("\nNo available sites for these dates.");
@@ -307,7 +291,7 @@ public class CampgroundCLI {
 			do {
 				inputAltDate = getUserInput("\nWould you like to search an alternate dates? Y/N").toUpperCase();
 				if (inputAltDate.contains("Y")) {
-					campSiteSearch(prevPark, campgroundId);
+					campSiteSearch(prevPark);
 				} else if(inputAltDate.contains("N")){
 					return;
 				}
@@ -354,7 +338,7 @@ public class CampgroundCLI {
 		String userName = getUserInput("\nWhat name should the reservation be made under?");
 		Reservation newRes = resDAO.addReservations(userName, fromDate, toDate, userSelSite);
 		
-		System.out.println("\nCongratulations " + newRes.getName() + ", you are booked.");
+		System.out.println("Congratulations " + newRes.getName() + ", you are booked.");
 		System.out.println("Your confirmation number/reservation id is: ");
 		System.out.println(newRes.getReservation_id());
 		System.out.println("Your arrival date is: ");
@@ -512,6 +496,23 @@ public class CampgroundCLI {
 	}
 	
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

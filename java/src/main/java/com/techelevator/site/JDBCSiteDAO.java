@@ -68,7 +68,7 @@ public class JDBCSiteDAO implements SiteDAO {
 		List<Site> reservationByAllCampgroundsInAPark = new ArrayList<Site>();
 		
 		List<Site> totalCamps = getAllCampgroundsByParkId(parkId);
-		//			^^^^^ TRYING TO PASS THIS INTO THE SEARCH SEEMS LIKE IT SHOULD BE A SIMPLE ARRAY
+		
 		for(int i = 0; i < totalCamps.size(); i++) {
 
 			String sqlListAllResBySiteQuery = 	" SELECT * " +

@@ -44,8 +44,8 @@ public class JDBCSiteDAO implements SiteDAO {
 	public List<Site> getAllCampgroundsByParkId(int parkId){
 		
 		List<Site> allCampsgroundsInAPark = new ArrayList<Site>();
-		
-		String sqlGetAllCampgroundsFromParkId = "SELECT * " + 
+		//  THIS IS AN SQL TO RETURN ONLY A LIST OF UNIQUE CAMPGROUND_ID
+		String sqlGetAllCampgroundsFromParkId = "SELECT DISTINCT campground.campground_id " + 
 												"FROM site " + 
 												"INNER JOIN campground " + 
 												"ON campground.campground_id = site.campground_id " + 
@@ -53,7 +53,7 @@ public class JDBCSiteDAO implements SiteDAO {
 												;
 		SqlRowSet results = jdbcTemplate.queryForRowSet(sqlGetAllCampgroundsFromParkId, parkId);
 		while(results.next()) {
-			Site aCampground = mapRowToSite(results);
+			Site aCampground = mapRowSite(results);
 			allCampsgroundsInAPark.add(aCampground);
 		}
 		
@@ -63,11 +63,13 @@ public class JDBCSiteDAO implements SiteDAO {
 
 	@Override
 	public List<Site> getAvailableCampgroundResByPark(int parkId, LocalDate fromDate, LocalDate toDate, String fromMonth, String toMonth){
+		////////// THIS IS RETURNING A LIST THAT DOESN'T REPEATS THE FIRST CAMPGROUNDS SITES 5 TIMES OVER AND OVER
+		
 		List<Site> reservationByAllCampgroundsInAPark = new ArrayList<Site>();
 		
 		List<Site> totalCamps = getAllCampgroundsByParkId(parkId);
-		
-		for(Site cur: totalCamps) {
+		//			^^^^^ TRYING TO PASS THIS INTO THE SEARCH SEEMS LIKE IT SHOULD BE A SIMPLE ARRAY
+		for(int i = 0; i < totalCamps.size(); i++) {
 
 			String sqlListAllResBySiteQuery = 	" SELECT * " +
 												" FROM site " +
@@ -84,7 +86,7 @@ public class JDBCSiteDAO implements SiteDAO {
 												" AND open_from_mm <= ? AND open_to_mm >= ? " +
 												" LIMIT 5 ";
 
-			SqlRowSet results = jdbcTemplate.queryForRowSet(sqlListAllResBySiteQuery, parkId, cur.getCampground_id(), fromDate, toDate, fromDate, toDate, fromMonth, toMonth);
+			SqlRowSet results = jdbcTemplate.queryForRowSet(sqlListAllResBySiteQuery, parkId, totalCamps.get(i).getCampground_id(), fromDate, toDate, fromDate, toDate, fromMonth, toMonth);
 
 			while(results.next()) {	
 				Site aFreeSite = mapRowToSite(results);
@@ -265,6 +267,12 @@ public class JDBCSiteDAO implements SiteDAO {
 		theSite.setMax_rv_length(results.getInt("max_rv_length"));
 		theSite.setUtilities(results.getBoolean("utilities"));
 		
+		return theSite;
+	}
+	
+	private Site mapRowSite(SqlRowSet results) {
+		Site theSite = new Site(); 
+		theSite.setCampground_id(results.getInt("campground_id"));		
 		return theSite;
 	}
 

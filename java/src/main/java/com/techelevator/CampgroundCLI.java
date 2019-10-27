@@ -295,10 +295,17 @@ public class CampgroundCLI {
 	    }
 	    
 	    // Validate query results
-		if(availRes.size() > 0) { 
+		if(availRes.size() > 0 && availRes.size() < 5) {  // < ------ need to tie the campgroundId parameter to this if statement to confirm all campgrounds have same id
 			displayAvailRes(availRes, stayDays);
-// selectReservation is where I'm having my issue for the Bonus
+			System.out.println(availRes.size());
 			selectReservation(arrDate, depDate);
+		} else if (availRes.size() > 0 && availRes.size() > 5) {
+
+// If the List<site> is larger then 5 it shouldnt be from one campground. 
+			
+			displayAvailRes(availRes, stayDays);
+
+		
 		} else {
 			
 			System.out.println("\nNo available sites for these dates.");

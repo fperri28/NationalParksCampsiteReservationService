@@ -222,23 +222,9 @@ public class CampgroundCLI {
 		Set<Integer> idList = new HashSet<Integer> ();
 		Integer userSelCampId = null;
 	   
-		/*
-		//NumberFormatException
-	    try {
-            // intentional error
-            String s = "FOOBAR";
-            int i = Integer.parseInt(s);
-
-            // this line of code will never be reached
-            System.out.println("int value = " + i);
-        }
-        catch (NumberFormatException nfe) {
-            nfe.printStackTrace();
-        }
-        */
-	    
+		boolean success = false;
 		
-		
+		do {
 		
 		try {
 		
@@ -247,7 +233,7 @@ public class CampgroundCLI {
 			for(Campground cur: campgrounds) {
 				idList.add(cur.getCampground_id());
 			}
-			
+
 			// User campground validator
 			if(userSelCampId == 0) {
 				return;
@@ -255,12 +241,14 @@ public class CampgroundCLI {
 				System.out.println("\nINVALID SELECTION");
 				return;
 			}
+			success = true;
 		} catch (NumberFormatException e) {
 			System.out.println("Please enter valid input");
-		}
+		}}
+		while (!success);
 		
 		// Get user arrival date
-		boolean success = false;
+		success = false;
 		
 		do {
 			try {
@@ -347,7 +335,17 @@ public class CampgroundCLI {
 	
 	
 	private void selectReservation(LocalDate fromDate, LocalDate toDate) {
-		Integer userSelSite = Integer.parseInt(getUserInput("\n\nWhich site should be reserved (enter 0 to cancel)?"));
+		Integer userSelSite = null;
+		
+		
+		try {
+		
+			userSelSite = Integer.parseInt(getUserInput("\n\nWhich site should be reserved (enter 0 to cancel)?"));
+		} catch (NumberFormatException e) {
+			System.out.println("Please enter valid input");
+		}
+		
+		
 		
 		if(userSelSite == 0) {
 			return;

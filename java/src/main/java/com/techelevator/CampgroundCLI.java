@@ -268,7 +268,17 @@ public class CampgroundCLI {
 		
 	    String arrMonth = String.valueOf(arrDate.getMonthValue());
 	    String depMonth = String.valueOf(depDate.getMonthValue());
+	    if(arrDate.getMonthValue() < 10) {
+	    	arrMonth = "0" + arrMonth;
+	    	
+	    }
+	    if(depDate.getMonthValue() < 10) {
+	    	depMonth = "0" + depMonth;
+	    	
+	    }
 	    
+	    
+	
 	    // Validate dates 
 	    if(arrDate.isBefore(depDate)) {
 	    	availRes = siteDAO.getAvailableResBySite(userSelCampId, prevPark, arrDate, depDate, arrMonth, depMonth);
@@ -320,15 +330,17 @@ public class CampgroundCLI {
 	
 	private void selectReservation(LocalDate fromDate, LocalDate toDate) {
 		Integer userSelSite = null;
-		
-		
+		boolean success = false;
+		do {
 		try {
 		
 			userSelSite = Integer.parseInt(getUserInput("\n\nWhich site should be reserved (enter 0 to cancel)?"));
+			success = true;
 		} catch (NumberFormatException e) {
 			System.out.println("Please enter valid input");
 		}
-		
+		}
+		while (!success);
 		
 		
 		if(userSelSite == 0) {

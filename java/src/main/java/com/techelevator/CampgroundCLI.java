@@ -9,6 +9,8 @@ import java.time.Month;
 import java.time.Period;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.time.temporal.ChronoUnit;
+import java.time.chrono.*;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -262,10 +264,9 @@ public class CampgroundCLI {
 		}
 		while(!success);			
 	 
-		// Retrieve stay length and month values
-	    Period intervalPeriod = Period.between(arrDate, depDate);
-	    BigDecimal stayDays = new BigDecimal(intervalPeriod.getDays());
-		
+		// Retrieve stay length and month values	    
+	    BigDecimal daysBetween = new BigDecimal(ChronoUnit.DAYS.between(arrDate, depDate));
+	    
 	    String arrMonth = String.valueOf(arrDate.getMonthValue());
 	    String depMonth = String.valueOf(depDate.getMonthValue());
 	    if(arrDate.getMonthValue() < 10) {
@@ -292,7 +293,7 @@ public class CampgroundCLI {
 	    
 	    // Validate query results
 		if(availRes.size() > 0) { 
-			displayAvailRes(availRes, stayDays);
+			displayAvailRes(availRes, daysBetween);
 			selectReservation(arrDate, depDate);
 		} else {
 			

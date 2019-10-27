@@ -221,43 +221,6 @@ public class CampgroundCLI {
 		List<Campground> campgrounds = campDAO.getCampgroundByPark(prevPark);
 		Set<Integer> idList = new HashSet<Integer> ();
 		Integer userSelCampId = null;
-		boolean success = false;
-
-		do {
-			
-			try {
-		
-				userSelCampId = Integer.parseInt(getUserInput("\n\nWhich campground(enter 0 to cancel)?"));
-
-				for(Campground cur: campgrounds) {
-					idList.add(cur.getCampground_id());
-				}
-
-				// User campground validator
-				if(userSelCampId == 0) {
-					return;
-				} else if(!idList.contains(userSelCampId)) {
-					System.out.println("\nINVALID SELECTION");
-					return;
-				}
-				success = true;
-			} catch (NumberFormatException e) {
-				System.out.println("Please enter valid input");
-			}
-		}	while(!success);
-		campSiteSearch(prevPark, userSelCampId);
-	}
-	
-	
-	private void campSiteSearch(int prevPark, int campgroundId) {
-// Everything commented out in this method is now in Method askForCampgroundId. This works but I wanted to let you test it before deleting.
-//
-//		List<Campground> campgrounds = campDAO.getCampgroundByPark(prevPark);
-//		Set<Integer> idList = new HashSet<Integer> ();
-		LocalDate depDate = null;
-		LocalDate arrDate = null;
-		List<Site> availRes = null;
-//		Integer userSelCampId = null;
 	   
 		/*
 		//NumberFormatException
@@ -273,34 +236,31 @@ public class CampgroundCLI {
             nfe.printStackTrace();
         }
         */
-		boolean success = false;
-//		
-//		do {
-//		
-//			try {
-//		
-//				userSelCampId = Integer.parseInt(getUserInput("\n\nWhich campground(enter 0 to cancel)?"));
-//
-//				for(Campground cur: campgrounds) {
-//					idList.add(cur.getCampground_id());
-//				}
-//
-//				// User campground validator
-//				if(userSelCampId == 0) {
-//					return;
-//				} else if(!idList.contains(userSelCampId)) {
-//					System.out.println("\nINVALID SELECTION");
-//					return;
-//				}
-//				success = true;
-//			} catch (NumberFormatException e) {
-//				System.out.println("Please enter valid input");
-//			}
-//		}
-//		while(!success);
+	    
+		
+		
+		
+		try {
+		
+			userSelCampId = Integer.parseInt(getUserInput("\n\nWhich campground(enter 0 to cancel)?"));
+
+			for(Campground cur: campgrounds) {
+				idList.add(cur.getCampground_id());
+			}
+			
+			// User campground validator
+			if(userSelCampId == 0) {
+				return;
+			} else if(!idList.contains(userSelCampId)) {
+				System.out.println("\nINVALID SELECTION");
+				return;
+			}
+		} catch (NumberFormatException e) {
+			System.out.println("Please enter valid input");
+		}
 		
 		// Get user arrival date
-//		success = false;
+		boolean success = false;
 		
 		do {
 			try {
@@ -366,7 +326,6 @@ public class CampgroundCLI {
 			} while (!inputAltDate.equals("Y") && !inputAltDate.equals("N"));
 		}
 	}
-		
 	
 	private LocalDate getUserInputDate(String message) {
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/d/yyyy");

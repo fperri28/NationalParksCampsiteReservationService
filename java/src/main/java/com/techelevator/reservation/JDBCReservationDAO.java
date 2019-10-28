@@ -111,22 +111,8 @@ public class JDBCReservationDAO implements ReservationDAO{
 	
 	@Override
 	public List<Reservation> getReservationsBySite(int siteId, int campId) {
-		List<Reservation> reservationbySite = new ArrayList<Reservation>();
-		
-		String sqlListAllEmpQuery = 	"SELECT * " + 
-										"FROM reservation " + 
-										"WHERE site_id = ? AND " +
-										"campground_id = ? "
-										;
-		
-		SqlRowSet results = jdbcTemplate.queryForRowSet(sqlListAllEmpQuery, siteId);
-
-		while(results.next()) {	
-			Reservation aReservation = mapRowToReservation(results);
-			reservationbySite.add(aReservation);
-		}
-		
-		return reservationbySite;
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 	@Override

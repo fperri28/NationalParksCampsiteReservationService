@@ -48,13 +48,13 @@ public class Menu {
 		return choice;
 	}
 
-	private void displayMenuOptions(Object[] objects) { // MAIN MENU METHOD EXCLUDES THE HIDDEN OPTION
+	private void displayMenuOptions(Object[] options) {
 		out.println();
-		for(int i = 0; i < objects.length; i++) {
+		for(int i = 0; i < options.length; i++) {
 			int optionNum = i+1;
-					out.println( optionNum + ") " + objects[i]);;
-					
+			out.println(optionNum+") "+options[i]);
 		}
-
+		out.print("\nPlease choose an option >>> ");
+		out.flush();
 	}
 }
